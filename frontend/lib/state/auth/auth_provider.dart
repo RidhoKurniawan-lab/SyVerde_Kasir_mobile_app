@@ -1,27 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/data/repositories/auth/auth_repository.dart';
+import 'package:frontend/data/services/api/auth_api.dart';
 
-final authProvider = 
-  StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
+// DEPENDENCY 
+
+final authApiProvider = Provider<AuthApi>((ref) {
+  return AuthApi();
 });
 
-class AuthNotifier extends StateNotifier<AuthState> {
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepository(ref.read(authApiProvider));
+});
 
-  AuthNotifier() : super(AuthInitial());
 
-  Future<void> login(String username, String password) async {
-    state = AuthLoading();
-    try {
-      // Simulasi proses login
-      await Future.delayed(const Duration(seconds: 2));
-      // Jika berhasil
-      state = AuthSuccess();
-    } catch (e) {
-      // Jika gagal
-      state = AuthError(message: 'Login failed');
-    }
-  }
-}
 
 //  STATE 
 
@@ -35,5 +26,35 @@ class AuthSuccess extends AuthState {}
 
 class AuthError extends AuthState {
   final String message;
-  AuthError({required this.message});
+  AuthError(this.message);
+}
+
+//NOTIFIER
+
+final authProvider = 
+  StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+  return AuthNotifier(ref.read(authRepositoryProvider));
+});
+
+class AuthNotifier extends StateNotifier<AuthState> {
+  final AuthRepository repository;
+
+  AuthNotifier(this.repository) : super(AuthInitial());
+
+  Future<void> login(
+    String email, 
+    String password
+    ) async {
+
+    state = AuthLoading();
+    
+    try {
+      await repository.login(email, password);
+      state = AuthSuccess();
+      
+    } catch (e) {
+      // Jika gagal
+      state = AuthError(e.toString().replaceAll('Exception:', '').trim());
+    }
+  }
 }

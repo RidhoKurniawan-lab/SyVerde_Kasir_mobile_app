@@ -9,7 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.5.0
+  flutter_riverpod: ^2.5.0 # untuk state management
+  http: ^1.6.0 # untuk melakukan permintaan HTTP ke backend
+  flutter_secure_storage: ^8.0.0 # untuk menyimpan data di perangkat dengan aman
 
 dev_dependencies:
   flutter_test:
@@ -19,8 +21,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
-  fonts:
+    - assets/images/ # menambahkan folder gambar
+  fonts: # menambahkan font kustom
     - family: Manrope
       fonts:
         - asset: assets/fonts/Manrope-ExtraLight.ttf
