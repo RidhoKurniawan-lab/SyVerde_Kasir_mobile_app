@@ -10,9 +10,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/auth/login_screen.dart';
 import 'package:frontend/core/constants/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/core/configs/routes.dart';
 
 void main() {
   runApp(const ProviderScope(
@@ -28,7 +28,8 @@ class MainApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       title: 'SyVerde',
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.getAllRoutes(),
     );
   }
 }

@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:frontend/data/models/user_model.dart';
 import 'package:frontend/data/services/api/auth_api.dart';
 import 'package:frontend/core/services/secure_storage.dart';
 
@@ -8,18 +7,16 @@ class AuthRepository {
 
   AuthRepository(this.api);
 
-  Future<void> login(
-    String email,
-    String password,
-  ) async {
-    final response = await api.login(
-      email: email, 
-      password: password
-      );
+  Future<UserModel> login(String email, String password) async {
+    final response = await api.login(email: email, password: password);
+
     final token = response['token'];
+    final userJson = response['user'];
 
     // save token securely
     await SecureStorage.saveToken(token);
+
+    return UserModel.fromJson(userJson);
   }
 
   // Logout
@@ -32,5 +29,4 @@ class AuthRepository {
     final token = await SecureStorage.getToken();
     return token != null;
   }
-
 }

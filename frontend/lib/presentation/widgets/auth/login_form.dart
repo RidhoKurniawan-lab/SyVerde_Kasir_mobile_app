@@ -18,7 +18,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   late final ProviderSubscription _authSub;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
 
     _authSub = ref.listenManual<AuthState>(authProvider, (prev, next) {
@@ -28,7 +28,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         ).showSnackBar(SnackBar(content: Text(next.message)));
       }
       if (next is AuthSuccess) {
-        // Navigator.pushReplacement(...)
+        if (next.user.role.name == 'Admin') {
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else if (next.user.role.name == 'Kasir') {
+          Navigator.pushReplacementNamed(context, '/kasir');
+        }
       }
     });
   }
@@ -119,7 +123,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   : () {
                       ref
                           .read(authProvider.notifier)
-                          .login(_emailController.text, _passwordController.text);
+                          .login(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
                     },
             ),
           ),

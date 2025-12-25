@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/data/models/user_model.dart';
 import 'package:frontend/data/repositories/auth/auth_repository.dart';
 import 'package:frontend/data/services/api/auth_api.dart';
 
@@ -22,7 +23,10 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {}
+class AuthSuccess extends AuthState {
+  final UserModel user;
+  AuthSuccess(this.user);
+}
 
 class AuthError extends AuthState {
   final String message;
@@ -49,9 +53,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthLoading();
     
     try {
-      await repository.login(email, password);
-      state = AuthSuccess();
-      
+       final user = await repository.login(email, password);
+      state = AuthSuccess(user);
+
     } catch (e) {
       // Jika gagal
       state = AuthError(e.toString().replaceAll('Exception:', '').trim());

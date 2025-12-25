@@ -1,7 +1,7 @@
 class AppEndpoint {
   // Base URL
-  static const String baseUrl = "https://api.example.com";
+  static const String baseUrl = "https://suanne-chapleted-dirtily.ngrok-free.dev";
 
   // Authentication Endpoints
-  static const String login = "$baseUrl/auth/login";
+  static const String login = "$baseUrl/api/login";
 }

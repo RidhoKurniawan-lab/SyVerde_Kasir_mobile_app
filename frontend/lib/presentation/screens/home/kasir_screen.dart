@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+
+class KasirScreen extends StatelessWidget {
+  const KasirScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Kasir Screen'),
+      ),
+      body: const Center(
+        child: Text('Welcome to the Kasir Screen!'),
+      ),
+    );
+  }
+}
