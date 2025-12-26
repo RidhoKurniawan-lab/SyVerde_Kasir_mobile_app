@@ -12,6 +12,7 @@ dependencies:
   flutter_riverpod: ^2.5.0 # untuk state management
   http: ^1.6.0 # untuk melakukan permintaan HTTP ke backend
   flutter_secure_storage: ^8.0.0 # untuk menyimpan data di perangkat dengan aman
+  material_symbols_icons: ^4.2785.1 # untuk ikon material symbols
 
 dev_dependencies:
   flutter_test:

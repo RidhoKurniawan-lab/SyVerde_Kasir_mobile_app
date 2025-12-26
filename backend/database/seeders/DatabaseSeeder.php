@@ -19,20 +19,20 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         DB::table('roles')->insert([
-            ['name' => 'Admin'],
-            ['name' => 'Kasir'],
+            ['name' => 'Administrator'],
+            ['name' => 'Cashier'],
         ]);
 
         User::create([
-            'name' => 'Admin',
+            'name' => 'Yumi Lee',
             'email' => 'admin@gmail.com',
-            'password' => 'admin123', 
+            'password' => 'admin123',
             'is_active' => true,
             'role_id' => 1,
         ]);
 
         User::create([
-            'name' => 'Kasir',
+            'name' => 'Takeda Kaneshiro',
             'email' => 'kasir@gmail.com',
             'password' => 'kasir123',
             'is_active' => false,

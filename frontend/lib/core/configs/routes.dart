@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/home/admin_screen.dart';
-import 'package:frontend/presentation/screens/home/kasir_screen.dart';  
 import 'package:frontend/presentation/screens/auth/login_screen.dart';
+import 'package:frontend/presentation/screens/layout/admin.dart';
+import 'package:frontend/presentation/screens/layout/kasir.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -12,8 +12,8 @@ class AppRoutes {
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
       login: (context) => const LoginScreen(),
-      admin: (context) => const AdminScreen(),
-      kasir: (context) => const KasirScreen(),
+      admin: (context) => const AdminLayout(),
+      kasir: (context) => const KasirLayout(),
     };
   }
 }
