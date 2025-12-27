@@ -4,4 +4,6 @@ class AppEndpoint {
 
   // Authentication Endpoints
   static const String login = "$baseUrl/api/login";
+
+  static const String product = "$baseUrl/api/product/get";
 }

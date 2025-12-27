@@ -53,7 +53,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
-        color: AppColor.secondary,
+        color: AppColor.primarywhite,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(46),
           topRight: Radius.circular(46),

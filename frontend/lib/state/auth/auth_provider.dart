@@ -14,7 +14,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 
-
 //  STATE 
 
 abstract class AuthState {}

@@ -74,13 +74,13 @@ class _NavItem extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: isSelected ? AppColor.secondary : AppColor.transparent,
+              color: isSelected ? AppColor.primarywhite : AppColor.transparent,
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: 40,
-              color: isSelected ? AppColor.primary : AppColor.secondary,
+              color: isSelected ? AppColor.primary : AppColor.primarywhite,
             ),
           ),
         ),
