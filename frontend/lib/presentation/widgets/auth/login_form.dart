@@ -91,6 +91,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           SizedBox(
             width: 333,
             child: CustomTextField(
+              withicon: true,
               controller: _emailController,
               label: 'Email',
               hintText: 'Masukkan email',
@@ -103,6 +104,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           SizedBox(
             width: 333,
             child: CustomTextField(
+              withicon: true,
               controller: _passwordController,
               label: 'Password',
               hintText: 'Masukkan password',

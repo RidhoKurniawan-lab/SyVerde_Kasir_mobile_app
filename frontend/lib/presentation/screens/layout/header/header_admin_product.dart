@@ -5,7 +5,15 @@ import 'package:frontend/presentation/screens/layout/header/header_base.dart';
 import 'package:frontend/state/auth/auth_provider.dart';
 
 class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
-  const HeaderAdminProduct({super.key});
+  final bool isIcon;
+  final String header;
+
+  const HeaderAdminProduct({
+    super.key,
+    required this.isIcon,
+    required this.header
+  });
+
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
@@ -22,11 +30,33 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
       child: Row(
         children: [
           const SizedBox(width: 14),
+
+          if(!isIcon)
+          GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColor.primarylight40,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: AppColor.primary,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+          
+          if (!isIcon) const SizedBox(width: 10),
           
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Management Product',
+              Text(header,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: AppColor.primary,
                   fontWeight: FontWeight.w600,
@@ -43,6 +73,7 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
           ),
 
           const Spacer(),
+          if (isIcon)
           IconButton(
             onPressed: () {},
             icon: const Icon(
@@ -51,6 +82,7 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
               size: 30,
             ),
           ),
+          if (isIcon)
           IconButton(
             onPressed: () {},
             icon: const Icon(
@@ -59,8 +91,13 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
               size: 30,
             ),
           ),
+
+          // Add Product
+          if (isIcon)
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/add_product');
+            },
             icon: const Icon(
               Icons.add,
               color: AppColor.primary,

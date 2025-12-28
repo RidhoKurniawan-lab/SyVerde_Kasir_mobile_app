@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data/services/api/product_api.dart';
 import 'package:frontend/data/repositories/product/product_repository.dart';
 import 'package:frontend/data/models/product_model.dart';
-import 'package:flutter/foundation.dart';
 
 //DESPENDENCY
 

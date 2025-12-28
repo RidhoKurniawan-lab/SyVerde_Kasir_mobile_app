@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
 
-class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
+class CustomDropdown<T> extends StatelessWidget {
+  final T? value;
+  final List<DropdownMenuItem<T>> items;
   final String label;
-  final bool withicon;
   final String hintText;
+  final bool withIcon;
   final IconData? prefixIcon;
-  final TextInputType keyboardType;
-  final bool obscureText;
+  final ValueChanged<T?> onChanged;
+  final String? Function(T?)? validator;
 
-  const CustomTextField({
+  const CustomDropdown({
     super.key,
-    required this.controller,
+    required this.value,
+    required this.items,
     required this.label,
-    required this.withicon,
     required this.hintText,
+    required this.onChanged,
+    this.withIcon = false,
     this.prefixIcon,
-    this.keyboardType = TextInputType.text,
-    this.obscureText = false,
+    this.validator,
   });
 
   OutlineInputBorder _border(Color color, {double width = 1}) {
@@ -30,28 +32,28 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
+    return DropdownButtonFormField<T>(
+      initialValue: value,
+      isExpanded: true,
+      items: items,
+      onChanged: onChanged,
+      validator: validator,
       decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,
         labelText: label,
         hintText: hintText,
-        prefixIcon: withicon ? Icon(prefixIcon) : null,
+        prefixIcon: withIcon ? Icon(prefixIcon) : null,
         filled: true,
         fillColor: AppColor.secondarywhite,
 
-        // HINT / NORMAL
-        enabledBorder: _border(AppColor.primary, width: 0.2),
-
-        // FOCUS
+        enabledBorder: _border(Colors.grey.shade300),
         focusedBorder: _border(AppColor.primary, width: 2),
-
-        // ERROR
         errorBorder: _border(Colors.red),
         focusedErrorBorder: _border(Colors.red, width: 2),
       ),
+      
+      icon: const Icon(Icons.keyboard_arrow_down),
+      dropdownColor: AppColor.primarywhite,
+      borderRadius: BorderRadius.circular(16),
     );
   }
 }

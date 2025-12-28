@@ -14,7 +14,7 @@ class AdminProduct extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColor.primarywhite,
-      appBar: const HeaderAdminProduct(),
+      appBar: const HeaderAdminProduct(isIcon: true, header: 'Management Product'),
       body: productState is ProductLoading
         ? const Center(child: CircularProgressIndicator())
         : productState is ProductLoaded

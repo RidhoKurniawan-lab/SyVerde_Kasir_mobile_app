@@ -6,6 +6,7 @@ class AppColor {
   static const Color primary = Color.fromARGB(255, 20, 69, 47);
   static const Color primarywhite = Color.fromARGB(255, 241, 241, 241);
   static const Color secondarywhite = Color.fromARGB(255, 255, 255, 255);
+  static const Color primarylight40 = Color.fromARGB(80, 104, 194, 154);
 
   static const Color transparent = Colors.transparent;
   static const Color shadow = Color.fromARGB(26, 0, 0, 0);
@@ -22,6 +23,7 @@ class AppColor {
   //red
   static const Color red28 = Color.fromARGB(30, 198, 40, 40);
   static const Color red100 = Color.fromARGB(255, 198, 40, 40);
+
 
 
 }
