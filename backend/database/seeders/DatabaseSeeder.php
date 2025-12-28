@@ -27,9 +27,21 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Unit::insert([
-            ['name' => 'Kg'],
-            ['name' => 'Gram'],
-            ['name' => 'Ons'],
+            [
+                'name' => 'Kg',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Gram',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Ons',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
 
         User::create([
