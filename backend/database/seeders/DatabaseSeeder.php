@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Unit;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -23,6 +24,12 @@ class DatabaseSeeder extends Seeder
         DB::table('roles')->insert([
             ['name' => 'Administrator'],
             ['name' => 'Cashier'],
+        ]);
+
+        Unit::insert([
+            ['name' => 'Kg'],
+            ['name' => 'Gram'],
+            ['name' => 'Ons'],
         ]);
 
         User::create([
@@ -73,7 +80,7 @@ class DatabaseSeeder extends Seeder
                 'sku' => 'AR-001',
                 'name' => 'Kopi Arabika Gayo',
                 'price' => 75000.00,
-                'unit' => 'gram',
+                'unit' => 2,
                 'image' => 'image',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -83,7 +90,7 @@ class DatabaseSeeder extends Seeder
                 'sku' => 'RB-001',
                 'name' => 'Kopi Robusta Lampung',
                 'price' => 60000.00,
-                'unit' => 'gram',
+                'unit' => 1,
                 'image' => 'image',
                 'created_at' => now(),
                 'updated_at' => now(),

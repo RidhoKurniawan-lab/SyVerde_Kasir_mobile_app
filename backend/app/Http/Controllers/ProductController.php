@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function get()
+    public function getAll()
     {
         $products = Product::with('category')->get();
         return response()->json($products);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function get()
+    public function getAll()
     {
         $categories = Category::all();
         return response()->json($categories);
