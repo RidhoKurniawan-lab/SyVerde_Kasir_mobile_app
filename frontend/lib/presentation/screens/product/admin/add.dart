@@ -9,6 +9,8 @@ import 'package:frontend/state/category_provider.dart';
 import 'package:frontend/state/product_provider.dart';
 import 'package:frontend/state/unit_provider.dart';
 import 'package:frontend/presentation/widgets/common/button_submit_bottom.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class AddProduct extends ConsumerStatefulWidget {
   const AddProduct({super.key});
@@ -25,13 +27,31 @@ class _AddProductState extends ConsumerState<AddProduct> {
   final _deskriptionProductController = TextEditingController();
   int? selectedCategory;
   int? selectedUnit;
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final result = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedImage = File(result.path);
+      });
+    }
+  }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
-    _productListener = ref.listenManual<ProductState>(productProvider, (prev, next){
-      if(next is ProductLoading){
+    _productListener = ref.listenManual<ProductState>(productProvider, (
+      prev,
+      next,
+    ) {
+      if (next is ProductLoading) {
         Navigator.pop(context);
       }
     });
@@ -68,74 +88,123 @@ class _AddProductState extends ConsumerState<AddProduct> {
                 final request = ProductRequest(
                   name: _nameProductController.text,
                   categoryId: selectedCategory!,
-                  unitId: selectedCategory!,
+                  unitId: selectedUnit!,
                   price: double.parse(_priceProductController.text),
                   sku: _skuProductController.text.trim(),
                   description: _deskriptionProductController.text.trim(),
                 );
 
-                notifier.insertProduct(request);
+                notifier.insertProduct(request: request, image: _selectedImage);
               },
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Column(
-            children: [
-              CustomTextField(
-                withicon: false,
-                controller: _nameProductController,
-                label: 'Name',
-                hintText: 'Nama Product',
-                errorText: state is ProductValidationError ? state.errors['name']?.first.toString()
-                : null,
-              ),
-
-              const SizedBox(height: 20),
-
-              _buildCategoryDropdown(state is ProductValidationError && selectedCategory == null ? 'Select Category' : null),
-              const SizedBox(height: 20),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                      withicon: false,
-                      controller: _priceProductController,
-                      label: 'Price',
-                      hintText: 'Price (Rp)',
-                      errorText: state is ProductValidationError ? state.errors['price']?.first.toString() : null,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Column(
+              children: [
+                const SizedBox(height: 22),
+        
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColor.secondarywhite, // opsional background
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: _selectedImage == null
+                          ? const Icon(
+                              Icons.add_a_photo,
+                              size: 100,
+                              color: Colors.grey,
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover, // PENTING
+                              ),
+                            ),
                     ),
                   ),
-
-                  const SizedBox(width: 13),
-
-                  Expanded(
-                    child: _buildUnitDropdown(state is ProductValidationError && selectedUnit == null ? 'Select Unit' : null),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              CustomTextField(
-                withicon: false,
-                controller: _skuProductController,
-                label: 'SKU',
-                hintText: 'SKU Product',
-                errorText: state is ProductValidationError ? state.errors['sku']?.first.toString() : null,
-              ),
-
-              const SizedBox(height: 20),
-
-              CustomTextField(
-                withicon: false,
-                controller: _deskriptionProductController,
-                label: 'Description',
-                hintText: 'Description Product (Optional)',
-                errorText: state is ProductValidationError ? state.errors['deskripsi']?.first.toString() : null,
-              ),
-            ],
+                ),
+        
+                const SizedBox(height: 30),
+        
+                CustomTextField(
+                  withicon: false,
+                  controller: _nameProductController,
+                  label: 'Name',
+                  hintText: 'Nama Product',
+                  errorText: state is ProductValidationError
+                      ? state.errors['name']?.first.toString()
+                      : null,
+                ),
+        
+                const SizedBox(height: 20),
+        
+                _buildCategoryDropdown(
+                  state is ProductValidationError && selectedCategory == null
+                      ? 'Select Category'
+                      : null,
+                ),
+                const SizedBox(height: 20),
+        
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        withicon: false,
+                        controller: _priceProductController,
+                        label: 'Price',
+                        hintText: 'Price (Rp)',
+                        errorText: state is ProductValidationError
+                            ? state.errors['price']?.first.toString()
+                            : null,
+                      ),
+                    ),
+        
+                    const SizedBox(width: 13),
+        
+                    Expanded(
+                      child: _buildUnitDropdown(
+                        state is ProductValidationError && selectedUnit == null
+                            ? 'Select Unit'
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+        
+                const SizedBox(height: 20),
+        
+                CustomTextField(
+                  withicon: false,
+                  controller: _skuProductController,
+                  label: 'SKU',
+                  hintText: 'SKU Product',
+                  errorText: state is ProductValidationError
+                      ? state.errors['sku']?.first.toString()
+                      : null,
+                ),
+        
+                const SizedBox(height: 20),
+        
+                CustomTextField(
+                  withicon: false,
+                  controller: _deskriptionProductController,
+                  label: 'Description',
+                  hintText: 'Description Product (Optional)',
+                  errorText: state is ProductValidationError
+                      ? state.errors['deskripsi']?.first.toString()
+                      : null,
+                ),
+              ],
+            ),
           ),
         ),
       ),

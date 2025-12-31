@@ -1,6 +1,5 @@
 import 'package:frontend/data/models/response/category_model.dart';
 import 'package:frontend/data/models/response/unit_model.dart';
-import 'package:flutter/foundation.dart';
 
 class ProductModel {
   final int id;
@@ -24,23 +23,23 @@ class ProductModel {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json){
-  debugPrint('FROM JSON: $json');
-  debugPrint('price runtimeType: ${json['price'].runtimeType}');
-  debugPrint('sku runtimeType: ${json['sku']?.runtimeType}');
-  debugPrint('name runtimeType: ${json['name'].runtimeType}');
-  debugPrint('id runtimeType: ${json['id']?.runtimeType}');
-  debugPrint('stock runtimeType: ${json['stock'].runtimeType}');
-  debugPrint('image runtimeType: ${json['image']?.runtimeType}');
+  // debugPrint('FROM JSON: $json');
+  // debugPrint('price runtimeType: ${json['price'].runtimeType}');
+  // debugPrint('sku runtimeType: ${json['sku']?.runtimeType}');
+  // debugPrint('name runtimeType: ${json['name'].runtimeType}');
+  // debugPrint('id runtimeType: ${json['id']?.runtimeType}');
+  // debugPrint('stock runtimeType: ${json['stock'].runtimeType}');
+  // debugPrint('image runtimeType: ${json['image']?.runtimeType}');
 
     return ProductModel(
       id: json['id'],
       category: CategoryModel.fromJson(json['category']),
-      sku: json['sku'],
-      name: json['name'],
+      sku: json['sku'] ?? '',
+      name: json['name'] ?? '',
       price: (json['price'] as num).toDouble(),
-      stock: json['stock'],
+      stock: json['stock'] ?? 0 ,
       unit: UnitModel.fromJson(json['unit']),
-      image: json['image']
+      image: json['image'] ?? 'image'
     );
   }
 }

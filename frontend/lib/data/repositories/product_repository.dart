@@ -3,6 +3,7 @@ import 'package:frontend/data/models/request/product_request_model.dart';
 import 'package:frontend/data/models/response/product_model.dart';
 import 'package:frontend/data/services/api/product_api.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class ProductRepository {
   final ProductApi api;
@@ -21,9 +22,15 @@ class ProductRepository {
     }
   }
 
-  Future<ProductModel> insertProduct(ProductRequest request) async {
+  Future<ProductModel> insertProduct({
+    required ProductRequest request,
+    File? image,
+  }) async {
     try {
-      final response = await api.insertProduct(request.toJson());
+      final response = await api.insertProduct(
+        fields: request.toJson(),
+        image: image,
+      );
       return ProductModel.fromJson(response);
     } on ValidationException {
       rethrow;

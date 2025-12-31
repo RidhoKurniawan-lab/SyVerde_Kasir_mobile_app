@@ -16,7 +16,7 @@ class Product extends Model
         'price',
         'stock',
         'unit_id',
-        'image' => 'image',
+        'image',
         'description'
     ];
 
