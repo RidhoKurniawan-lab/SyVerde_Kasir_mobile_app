@@ -1,4 +1,4 @@
-import 'package:frontend/data/models/role_model.dart';
+import 'package:frontend/data/models/response/role_model.dart';
 
 class UserModel {
   final int id;

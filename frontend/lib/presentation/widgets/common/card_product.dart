@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:frontend/core/constants/app_color.dart';
 
 class CardProduct extends StatelessWidget {
   final int id;
   final String name;
   final String category;
-  final String price;
+  final double price;
   final int stock;
   final String sku;
   final String image;
+  final String unit;
 
   const CardProduct({
     super.key,
@@ -20,6 +20,7 @@ class CardProduct extends StatelessWidget {
     required this.stock,
     required this.sku,
     required this.image,
+    required this.unit
   });
 
   @override
@@ -82,9 +83,9 @@ class CardProduct extends StatelessWidget {
                 Text(
                   category,
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: AppColor.primary,
-                    fontWeight: FontWeight.w100,
+                    fontWeight: FontWeight.w300,
                   ),
                 ),
 
@@ -108,7 +109,7 @@ class CardProduct extends StatelessWidget {
                         const SizedBox(height: 5),
 
                         Text(
-                          price,
+                          price.toString(),
                           style: TextStyle(
                             fontSize: 10,
                             color: AppColor.black100,
@@ -117,6 +118,9 @@ class CardProduct extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    const SizedBox(width: 12),
+
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -132,7 +136,7 @@ class CardProduct extends StatelessWidget {
                         const SizedBox(height: 5),
 
                         Text(
-                          stock.toString(),
+                          "$stock  $unit",
                           style: TextStyle(
                             fontSize: 10,
                             color: AppColor.black100,
@@ -141,6 +145,9 @@ class CardProduct extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    const SizedBox(width: 12),
+
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/data/models/user_model.dart';
-import 'package:frontend/data/repositories/auth/auth_repository.dart';
+import 'package:frontend/data/models/response/user_model.dart';
+import 'package:frontend/data/repositories/auth_repository.dart';
 import 'package:frontend/data/services/api/auth_api.dart';
 
 // DEPENDENCY 

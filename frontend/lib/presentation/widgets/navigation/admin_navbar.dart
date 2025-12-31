@@ -13,31 +13,33 @@ class AdminNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(14),
-      child: SizedBox(
-        height: 80,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
-            color: AppColor.primary,
-            borderRadius: BorderRadius.circular(40),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              _NavItem(icon: Icons.home, index: 0, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: Icons.bar_chart, index: 1, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: Icons.all_inbox, index: 2, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: Icons.receipt_long, index: 3, currentIndex: currentIndex, onTap: onTap),
-              _NavItem(icon: Icons.settings, index: 4, currentIndex: currentIndex, onTap: onTap),
-            ],
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: SizedBox(
+          height: 70,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: AppColor.primary,
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                _NavItem(icon: Icons.home, index: 0, currentIndex: currentIndex, onTap: onTap),
+                _NavItem(icon: Icons.bar_chart, index: 1, currentIndex: currentIndex, onTap: onTap),
+                _NavItem(icon: Icons.all_inbox, index: 2, currentIndex: currentIndex, onTap: onTap),
+                _NavItem(icon: Icons.receipt_long, index: 3, currentIndex: currentIndex, onTap: onTap),
+                _NavItem(icon: Icons.settings, index: 4, currentIndex: currentIndex, onTap: onTap),
+              ],
+            ),
           ),
         ),
       ),

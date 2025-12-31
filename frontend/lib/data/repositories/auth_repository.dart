@@ -1,4 +1,4 @@
-import 'package:frontend/data/models/user_model.dart';
+import 'package:frontend/data/models/response/user_model.dart';
 import 'package:frontend/data/services/api/auth_api.dart';
 import 'package:frontend/core/services/secure_storage.dart';
 

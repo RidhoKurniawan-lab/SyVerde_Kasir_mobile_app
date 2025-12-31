@@ -10,6 +10,7 @@ class CustomDropdown<T> extends StatelessWidget {
   final IconData? prefixIcon;
   final ValueChanged<T?> onChanged;
   final String? Function(T?)? validator;
+  final String? errorText;
 
   const CustomDropdown({
     super.key,
@@ -21,6 +22,7 @@ class CustomDropdown<T> extends StatelessWidget {
     this.withIcon = false,
     this.prefixIcon,
     this.validator,
+    this.errorText
   });
 
   OutlineInputBorder _border(Color color, {double width = 1}) {
@@ -44,11 +46,11 @@ class CustomDropdown<T> extends StatelessWidget {
         prefixIcon: withIcon ? Icon(prefixIcon) : null,
         filled: true,
         fillColor: AppColor.secondarywhite,
-
         enabledBorder: _border(Colors.grey.shade300),
         focusedBorder: _border(AppColor.primary, width: 2),
         errorBorder: _border(Colors.red),
         focusedErrorBorder: _border(Colors.red, width: 2),
+        errorText: errorText 
       ),
       
       icon: const Icon(Icons.keyboard_arrow_down),

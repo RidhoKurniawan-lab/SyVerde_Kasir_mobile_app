@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_color.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -27,26 +28,17 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
           foregroundColor: textColor ?? Colors.white,
           disabledBackgroundColor:
-              (backgroundColor ?? Theme.of(context).primaryColor)
-                  .withOpacity(0.6),
+              (backgroundColor ?? AppColor.primarylight40),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : Text(
+        child: Text(
                 text,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: AppColor.primarywhite
                 ),
               ),
       ),

@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('unit');
-            $table->string('image')->nullable();
+            $table->foreignId('unit_id')->constrained('units')->cascadeOnDelete();
+            $table->string('image')->default('image');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

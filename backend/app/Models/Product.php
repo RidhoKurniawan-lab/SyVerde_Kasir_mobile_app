@@ -15,8 +15,13 @@ class Product extends Model
         'name',
         'price',
         'stock',
-        'unit',
-        'image',
+        'unit_id',
+        'image' => 'image',
+        'description'
+    ];
+
+    protected $casts = [
+        'price' => 'double'
     ];
 
     public function category()

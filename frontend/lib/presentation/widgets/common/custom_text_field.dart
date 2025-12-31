@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final TextInputType keyboardType;
   final bool obscureText;
+  final String? errorText;
 
   const CustomTextField({
     super.key,
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
+    this.errorText
   });
 
   OutlineInputBorder _border(Color color, {double width = 1}) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/widgets/common/custom_text_field.dart';
 import 'package:frontend/presentation/widgets/common/primary_button.dart';
-import 'package:frontend/state/auth/auth_provider.dart';
+import 'package:frontend/state/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
