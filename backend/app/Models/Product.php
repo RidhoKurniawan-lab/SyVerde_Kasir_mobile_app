@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -23,6 +24,12 @@ class Product extends Model
     protected $casts = [
         'price' => 'double'
     ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(){
+        return $this->image ? asset('storage/' . $this->image) : null ;
+    }
 
     public function category()
     {

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
+import 'package:frontend/core/configs/routes.dart';
+import 'package:frontend/presentation/widgets/helper/Alern.dart';
+import 'package:frontend/state/product_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CardProduct extends StatelessWidget {
+class CardProduct extends ConsumerWidget {
   final int id;
   final String name;
   final String category;
@@ -20,11 +24,24 @@ class CardProduct extends StatelessWidget {
     required this.stock,
     required this.sku,
     required this.image,
-    required this.unit
+    required this.unit,
   });
 
+  Widget _errorImage() {
+    return Container(
+      width: 100,
+      height: 100,
+      color: AppColor.black10,
+      child: const Icon(
+        Icons.image_not_supported,
+        size: 50,
+        color: AppColor.black50,
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       padding: const EdgeInsets.all(10),
@@ -45,22 +62,13 @@ class CardProduct extends StatelessWidget {
           //Image
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
-            child: Image.network(
+            child: image != 'default' && image.isNotEmpty ? Image.network(
               image,
               width: 100,
               height: 100,
               fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => Container(
-                width: 100,
-                height: 100,
-                color: AppColor.black10,
-                child: const Icon(
-                Icons.image_not_supported,
-                size: 50,
-                color: AppColor.black50,
-                ),
-              ),
-            ),
+              errorBuilder: (_, _, _) => _errorImage()
+            ) : _errorImage()
           ),
 
           const SizedBox(width: 10),
@@ -182,7 +190,12 @@ class CardProduct extends StatelessWidget {
           Column(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                   AppRoutes.editProduct,
+                   arguments: id);
+                },
                 child: Container(
                   width: 38,
                   height: 38,
@@ -201,7 +214,13 @@ class CardProduct extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  final confirm = await showDeleteConfirmationDialog(context, itemName: name);
+                  if (confirm == true) {
+                    await ref.read(productSubmitProvider.notifier).deleteProduct(id: id);
+                    await ref.read(productQueryProvider.notifier).getProduct();
+                  }
+                },
                 child: Container(
                   width: 38,
                   height: 38,
@@ -211,11 +230,7 @@ class CardProduct extends StatelessWidget {
                     color: AppColor.red28,
                   ),
                   child: const Center(
-                    child: Icon(
-                      Icons.delete,
-                      color: AppColor.red100,
-                      size: 22,
-                    ),
+                    child: Icon(Icons.delete, color: AppColor.red100, size: 22),
                   ),
                 ),
               ),

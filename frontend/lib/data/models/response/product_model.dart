@@ -10,6 +10,7 @@ class ProductModel {
   final int stock;
   final UnitModel unit;
   final String image;
+  final String? description;
 
   ProductModel({
     required this.id,
@@ -20,6 +21,7 @@ class ProductModel {
     required this.stock,
     required this.unit,
     required this.image,
+    this.description,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json){
@@ -39,7 +41,8 @@ class ProductModel {
       price: (json['price'] as num).toDouble(),
       stock: json['stock'] ?? 0 ,
       unit: UnitModel.fromJson(json['unit']),
-      image: json['image'] ?? 'image'
+      image: json['image_url'] ?? 'default',
+      description: json['description'] ?? ''
     );
   }
 }

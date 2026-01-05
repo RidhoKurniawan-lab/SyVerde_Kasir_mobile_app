@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/screens/layout/header/header_base.dart';
 import 'package:frontend/state/auth_provider.dart';
+import 'package:frontend/state/product_provider.dart';
 
 class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
   final bool isIcon;
@@ -33,7 +34,8 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
 
           if(!isIcon)
           GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () => 
+                Navigator.pop(context),
                 child: Container(
                   width: 40,
                   height: 40,

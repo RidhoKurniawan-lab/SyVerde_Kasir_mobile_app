@@ -3,6 +3,7 @@ import 'package:frontend/presentation/screens/auth/login_screen.dart';
 import 'package:frontend/presentation/screens/layout/admin.dart';
 import 'package:frontend/presentation/screens/layout/kasir.dart';
 import 'package:frontend/presentation/screens/product/admin/add.dart';
+import 'package:frontend/presentation/screens/product/admin/edit.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -10,6 +11,7 @@ class AppRoutes {
   static const String admin = '/admin';
   static const String kasir = '/kasir';
   static const String addProduct = '/add_product';
+  static const String editProduct = '/edit_product';
 
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
@@ -18,5 +20,25 @@ class AppRoutes {
       kasir: (context) => const KasirLayout(),
       addProduct: (context) => AddProduct(),
     };
+  }
+
+   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case editProduct:
+        final id = settings.arguments as int?;
+        if (id == null) return _errorRoute('Product ID missing!');
+        return MaterialPageRoute(builder: (_) => EditProduct(id: id));
+
+      default:
+        return null;
+    }
+  }
+
+  static MaterialPageRoute _errorRoute(String message) {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        body: Center(child: Text(message)),
+      ),
+    );
   }
 }

@@ -22,6 +22,15 @@ class ProductRepository {
     }
   }
 
+  Future<ProductModel> getProductById({required int id}) async {
+    try {
+      final response = await api.getProductById(id: id);
+      return ProductModel.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<ProductModel> insertProduct({
     required ProductRequest request,
     File? image,
@@ -34,6 +43,36 @@ class ProductRepository {
       return ProductModel.fromJson(response);
     } on ValidationException {
       rethrow;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<ProductModel> updateProduct({
+    required ProductRequest request,
+    File? image,
+    required int id,
+  }) async {
+    try {
+      final response = await api.updateProduct(
+        fields: request.toJson(),
+        image: image,
+        id: id,
+      );
+      return ProductModel.fromJson(response);
+    } on ValidationException {
+      rethrow;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteProduct({required int id}) async {
+    try {
+      final response = await api.deleteProduct(id: id);
+      return response;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;

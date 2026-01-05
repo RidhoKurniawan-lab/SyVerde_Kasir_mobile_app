@@ -47,11 +47,12 @@ class _AddProductState extends ConsumerState<AddProduct> {
   void initState() {
     super.initState();
 
-    _productListener = ref.listenManual<ProductState>(productProvider, (
+    _productListener = ref.listenManual<ProductSubmitState>(productSubmitProvider, (
       prev,
       next,
     ) {
-      if (next is ProductLoading) {
+      if (next is ProductSubmitSuccess) {
+        ref.read(productQueryProvider.notifier).getProduct();
         Navigator.pop(context);
       }
     });
@@ -69,8 +70,8 @@ class _AddProductState extends ConsumerState<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final notifier = ref.read(productProvider.notifier);
-    final state = ref.watch(productProvider);
+    final notifier = ref.read(productSubmitProvider.notifier);
+    final state = ref.watch(productSubmitProvider);
 
     return Scaffold(
       backgroundColor: AppColor.primarywhite,
@@ -81,8 +82,8 @@ class _AddProductState extends ConsumerState<AddProduct> {
         title: const HeaderAdminProduct(isIcon: false, header: 'ADD Product'),
       ),
       bottomNavigationBar: BottomSubmitButton(
-        text: state is ProductLoading ? 'Loading...' : 'Save',
-        onPressed: state is ProductLoading
+        text: state is ProductQueryLoading ? 'Loading...' : 'Save',
+        onPressed: state is ProductQueryLoading
             ? null
             : () {
                 final request = ProductRequest(
@@ -140,7 +141,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
                   controller: _nameProductController,
                   label: 'Name',
                   hintText: 'Nama Product',
-                  errorText: state is ProductValidationError
+                  errorText: state is ProductSubmitValidationError
                       ? state.errors['name']?.first.toString()
                       : null,
                 ),
@@ -148,7 +149,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
                 const SizedBox(height: 20),
         
                 _buildCategoryDropdown(
-                  state is ProductValidationError && selectedCategory == null
+                  state is ProductSubmitValidationError && selectedCategory == null
                       ? 'Select Category'
                       : null,
                 ),
@@ -162,7 +163,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
                         controller: _priceProductController,
                         label: 'Price',
                         hintText: 'Price (Rp)',
-                        errorText: state is ProductValidationError
+                        errorText: state is ProductSubmitValidationError
                             ? state.errors['price']?.first.toString()
                             : null,
                       ),
@@ -172,7 +173,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
         
                     Expanded(
                       child: _buildUnitDropdown(
-                        state is ProductValidationError && selectedUnit == null
+                        state is ProductSubmitValidationError && selectedUnit == null
                             ? 'Select Unit'
                             : null,
                       ),
@@ -187,7 +188,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
                   controller: _skuProductController,
                   label: 'SKU',
                   hintText: 'SKU Product',
-                  errorText: state is ProductValidationError
+                  errorText: state is ProductSubmitValidationError
                       ? state.errors['sku']?.first.toString()
                       : null,
                 ),
@@ -199,7 +200,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
                   controller: _deskriptionProductController,
                   label: 'Description',
                   hintText: 'Description Product (Optional)',
-                  errorText: state is ProductValidationError
+                  errorText: state is ProductSubmitValidationError
                       ? state.errors['deskripsi']?.first.toString()
                       : null,
                 ),

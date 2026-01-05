@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data/models/request/product_request_model.dart';
 import 'package:frontend/data/services/api/product_api.dart';
@@ -6,6 +6,7 @@ import 'package:frontend/data/repositories/product_repository.dart';
 import 'package:frontend/data/models/response/product_model.dart';
 import 'package:frontend/core/errors/validation_exception.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 //DESPENDENCY
 
@@ -15,22 +16,34 @@ final productRepositoryProvider = Provider<ProductRepository>(
   (ref) => ProductRepository(ref.read(productApiProvider)),
 );
 
-// STATE
+// STATE GET
 
+abstract class ProductQueryState {}
+
+class ProductQueryInitial extends ProductQueryState {}
+
+class ProductQueryLoading extends ProductQueryState {}
+
+class ProductQueryLoaded extends ProductQueryState {
+  final List<ProductModel> products;
+  ProductQueryLoaded(this.products);
+}
+
+class ProductQueryError extends ProductQueryState {
+  final String message;
+  ProductQueryError(this.message);
+}
+
+// 
 abstract class ProductState {}
 
 class ProductInitial extends ProductState {}
 
 class ProductLoading extends ProductState {}
 
-class ProductValidationError extends ProductState {
-  final Map<String, List<String>> errors;
-  ProductValidationError(this.errors);
-}
-
 class ProductLoaded extends ProductState {
-  final List<ProductModel> products;
-  ProductLoaded(this.products);
+  final ProductModel product;
+  ProductLoaded(this.product);
 }
 
 class ProductError extends ProductState {
@@ -38,56 +51,136 @@ class ProductError extends ProductState {
   ProductError(this.message);
 }
 
-// NOTIFIER
+// STATE SUBMIT
 
-final productProvider = StateNotifierProvider<ProductNotifier, ProductState>((
-  ref,
-) {
-  final repo = ref.read(productRepositoryProvider);
-  return ProductNotifier(repo)..getProduct();
-});
+abstract class ProductSubmitState {}
+
+class ProductSubmitInitial extends ProductSubmitState {}
+
+class ProductSubmitLoading extends ProductSubmitState {}
+
+class ProductSubmitSuccess extends ProductSubmitState {}
+
+class ProductSubmitError extends ProductSubmitState {
+  final String message;
+  ProductSubmitError(this.message);
+}
+
+class ProductSubmitValidationError extends ProductSubmitState {
+  final Map<String, List<String>> errors;
+  ProductSubmitValidationError(this.errors);
+}
+
+// PROVIDER GET
+final productProvider = 
+StateNotifierProvider<ProductNotifier, ProductState>((ref) => ProductNotifier(ref.read(productRepositoryProvider)),);
 
 class ProductNotifier extends StateNotifier<ProductState> {
   final ProductRepository repository;
 
   ProductNotifier(this.repository) : super(ProductInitial());
 
-  // get product
-  Future<void> getProduct() async {
+  Future<void> getProductById({required int id}) async {
     state = ProductLoading();
 
     try {
-      final products = await repository.getProduct();
-      state = ProductLoaded(products);
+      final product = await repository.getProductById(id: id);
+      state = ProductLoaded(product);
     } catch (e) {
-      debugPrint("$e.toString()");
-      state = ProductError(e.toString().replaceAll('Exception:', '').trim());
+      state = ProductError(
+        e.toString().replaceAll('Exception:', '').trim(),
+      );
     }
   }
+}
+
+// PROVIDER GETS
+final productQueryProvider =
+    StateNotifierProvider<ProductQueryNotifier, ProductQueryState>(
+      (ref) => ProductQueryNotifier(ref.read(productRepositoryProvider)),
+    );
+
+// NOTIFIER GETS
+class ProductQueryNotifier extends StateNotifier<ProductQueryState> {
+  final ProductRepository repository;
+
+  ProductQueryNotifier(this.repository) : super(ProductQueryInitial());
+
+  Future<void> getProduct() async {
+    state = ProductQueryLoading();
+
+    try {
+      final products = await repository.getProduct();
+      state = ProductQueryLoaded(products);
+    } catch (e) {
+      state = ProductQueryError(
+        e.toString().replaceAll('Exception:', '').trim(),
+      );
+    }
+  }
+}
+
+final productSubmitProvider =
+    StateNotifierProvider<ProductSubmitNotifier, ProductSubmitState>(
+      (ref) => ProductSubmitNotifier(ref.read(productRepositoryProvider)),
+    );
+
+class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
+  final ProductRepository repository;
+
+  ProductSubmitNotifier(this.repository) : super(ProductSubmitInitial());
 
   Future<void> insertProduct({
     required ProductRequest request,
     File? image,
   }) async {
-    final previousState = state; // simpan state sebelumnya,
-    state = ProductLoading();
+    state = ProductSubmitLoading();
 
     try {
-      final product = await repository.insertProduct(
-        request: request,
-        image: image,
-      );
-      if (previousState is ProductLoaded) {
-        state = ProductLoaded([
-          ...previousState.products,
-          product,
-        ]); // pakai state sebelumya dan gabungkan dengan yang baru
-      }
+      await repository.insertProduct(request: request, image: image);
+
+      state = ProductSubmitSuccess();
     } catch (e) {
       if (e is ValidationException) {
-        state = ProductValidationError(e.errors);
+        state = ProductSubmitValidationError(e.errors);
       } else {
-        state = ProductError(e.toString());
+        state = ProductSubmitError(e.toString());
+      }
+    }
+  }
+
+  Future<void> updateProduct({
+    required ProductRequest request,
+    File? image,
+    required int id
+  }) async {
+    state = ProductSubmitLoading();
+
+    try {
+      await repository.updateProduct(request: request, image: image, id: id);
+      state = ProductSubmitSuccess();
+    } catch (e) {
+      if (e is ValidationException) {
+        state = ProductSubmitValidationError(e.errors);
+      } else {
+        state = ProductSubmitError(e.toString());
+      }
+    }
+  }
+
+  Future<void> deleteProduct({
+    required int id
+  }) async {
+    state = ProductSubmitLoading();
+
+    try {
+      await repository.deleteProduct(id: id);
+      state = ProductSubmitSuccess();
+    } catch (e) {
+      if (e is ValidationException) {
+        state = ProductSubmitValidationError(e.errors);
+      } else {
+        state = ProductSubmitError(e.toString());
       }
     }
   }
