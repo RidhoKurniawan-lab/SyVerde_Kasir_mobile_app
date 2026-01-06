@@ -115,7 +115,7 @@ class _EditProductState extends ConsumerState<EditProduct> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         backgroundColor: AppColor.primarywhite,
-        title: const HeaderAdminProduct(isIcon: false, header: 'ADD Product'),
+        title: const HeaderAdminProduct(isIcon: false, category: false, header: 'EDIT Product'),
       ),
       bottomNavigationBar: BottomSubmitButton(
         text: state is ProductSubmitLoading ? 'Loading...' : 'Save',
@@ -306,9 +306,9 @@ class _EditProductState extends ConsumerState<EditProduct> {
   // GET CATEGORY
 
   Widget _buildCategoryDropdown(String? errorText) {
-    final state = ref.watch(categoryProvider);
+    final state = ref.watch(categoryQueryProvider);
 
-    if (state is CategoryError) {
+    if (state is CategoryQueryError) {
       return Text(state.message, style: const TextStyle(color: Colors.red));
     }
 
@@ -317,7 +317,7 @@ class _EditProductState extends ConsumerState<EditProduct> {
       hintText: 'Select Category',
       value: selectedCategory,
       withIcon: false,
-      items: state is CategoryLoaded
+      items: state is CategoryQueryLoaded
           ? state.categories.map((category) {
               return DropdownMenuItem<int>(
                 value: category.id, // atau category.name

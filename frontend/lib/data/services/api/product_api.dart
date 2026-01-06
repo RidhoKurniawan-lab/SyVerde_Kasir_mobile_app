@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:frontend/core/services/secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/core/constants/app_endpoint.dart';
@@ -132,6 +131,12 @@ class ProductApi {
       Uri.parse(AppEndpoint.productDelete(id)),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception(
+        jsonDecode(response.body)['message'] ?? 'Failed to add product',
+      );
+    }
 
     return jsonDecode(response.body);
   }

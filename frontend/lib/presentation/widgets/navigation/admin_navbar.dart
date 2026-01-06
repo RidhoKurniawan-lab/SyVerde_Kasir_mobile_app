@@ -17,9 +17,8 @@ class AdminNavbar extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: SizedBox(
-          height: 70,
+          height: 74,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               color: AppColor.primary,
               borderRadius: BorderRadius.circular(40),

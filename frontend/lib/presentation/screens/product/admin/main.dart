@@ -35,6 +35,7 @@ class _ProductState extends ConsumerState<AdminProduct> {
       backgroundColor: AppColor.primarywhite,
       appBar: const HeaderAdminProduct(
         isIcon: true,
+        category: false,
         header: 'Management Product',
       ),
       body: productState is ProductQueryLoading

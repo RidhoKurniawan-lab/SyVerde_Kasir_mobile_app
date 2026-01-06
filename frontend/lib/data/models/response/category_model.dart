@@ -1,13 +1,19 @@
+import 'dart:convert';
+
 class CategoryModel {
-  final int id;
+  final int? id;
   final String name;
 
   CategoryModel({
-    required this.id,
+    this.id,
     required this.name
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(id: json['id'], name: json['name']);
+  }
+
+  Map<String, dynamic> toJson(){
+    return { if(id != null) 'id': id, 'name': name };
   }
 }

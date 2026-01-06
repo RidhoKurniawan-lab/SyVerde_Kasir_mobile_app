@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/constants/app_color.dart';
+import 'package:frontend/data/models/response/category_model.dart';
 import 'package:frontend/presentation/screens/layout/header/header_base.dart';
 import 'package:frontend/state/auth_provider.dart';
-import 'package:frontend/state/product_provider.dart';
+import 'package:frontend/presentation/widgets/helper/add_category.dart';
+import 'package:frontend/state/category_provider.dart';
 
 class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
   final bool isIcon;
   final String header;
+  final bool category;
 
   const HeaderAdminProduct({
     super.key,
     required this.isIcon,
-    required this.header
+    required this.header,
+    required this.category,
   });
-
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
@@ -32,40 +35,41 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
         children: [
           const SizedBox(width: 14),
 
-          if(!isIcon)
-          GestureDetector(
-                onTap: () => 
-                Navigator.pop(context),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColor.primarylight40,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: AppColor.primary,
-                      size: 24,
-                    ),
+          if (!isIcon || category)
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColor.primarylight40,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: AppColor.primary,
+                    size: 24,
                   ),
                 ),
               ),
-          
-          if (!isIcon) const SizedBox(width: 10),
-          
+            ),
+
+          if (!isIcon || category) const SizedBox(width: 10),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(header,
+              Text(
+                header,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: AppColor.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              
-              Text('${user.name} - ${user.role.name}',
+
+              Text(
+                '${user.name} - ${user.role.name}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColor.primary,
                   fontWeight: FontWeight.w100,
@@ -75,39 +79,49 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
           ),
 
           const Spacer(),
-          if (isIcon)
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.category_outlined,
-              color: AppColor.primary,
-              size: 30,
+          if (isIcon && !category)
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/category');
+              },
+              icon: const Icon(
+                Icons.category_outlined,
+                color: AppColor.primary,
+                size: 30,
+              ),
             ),
-          ),
-          if (isIcon)
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.move_to_inbox_outlined,
-              color: AppColor.primary,
-              size: 30,
+          if (isIcon && !category)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.move_to_inbox_outlined,
+                color: AppColor.primary,
+                size: 30,
+              ),
             ),
-          ),
 
           // Add Product
-          if (isIcon)
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/add_product');
-            },
-            icon: const Icon(
-              Icons.add,
-              color: AppColor.primary,
-              size: 30,
+          if (isIcon || category)
+            IconButton(
+              onPressed: () {
+                if (category) {
+                  AddItemModal.show(context: context, title: 'Add Category', onSubmit: (name) async {
+                    await ref
+                        .read(categorySubmitProvider.notifier)
+                        .insertCategory(request: CategoryModel(name: name));
+
+                    await ref
+                        .read(categoryQueryProvider.notifier)
+                        .getCategory();
+                  });
+                } else {
+                  Navigator.pushNamed(context, '/add_product');
+                }
+              },
+              icon: const Icon(Icons.add, color: AppColor.primary, size: 30),
             ),
-          ),
-        ]
-      )
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/auth/login_screen.dart';
+import 'package:frontend/presentation/screens/category/main.dart';
 import 'package:frontend/presentation/screens/layout/admin.dart';
 import 'package:frontend/presentation/screens/layout/kasir.dart';
 import 'package:frontend/presentation/screens/product/admin/add.dart';
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String kasir = '/kasir';
   static const String addProduct = '/add_product';
   static const String editProduct = '/edit_product';
+  static const String category = '/category';
 
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
@@ -19,6 +21,7 @@ class AppRoutes {
       admin: (context) => const AdminLayout(),
       kasir: (context) => const KasirLayout(),
       addProduct: (context) => AddProduct(),
+      category: (context) => AdminCategory(),
     };
   }
 

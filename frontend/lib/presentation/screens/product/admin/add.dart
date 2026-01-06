@@ -79,7 +79,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         backgroundColor: AppColor.primarywhite,
-        title: const HeaderAdminProduct(isIcon: false, header: 'ADD Product'),
+        title: const HeaderAdminProduct(isIcon: false, category: false, header: 'ADD Product'),
       ),
       bottomNavigationBar: BottomSubmitButton(
         text: state is ProductQueryLoading ? 'Loading...' : 'Save',
@@ -251,9 +251,9 @@ class _AddProductState extends ConsumerState<AddProduct> {
   // GET CATEGORY
 
   Widget _buildCategoryDropdown(String? errorText) {
-    final state = ref.watch(categoryProvider);
+    final state = ref.watch(categoryQueryProvider);
 
-    if (state is CategoryError) {
+    if (state is CategoryQueryError) {
       return Text(state.message, style: const TextStyle(color: Colors.red));
     }
 
@@ -262,7 +262,7 @@ class _AddProductState extends ConsumerState<AddProduct> {
       hintText: 'Select Category',
       value: selectedCategory,
       withIcon: false,
-      items: state is CategoryLoaded
+      items: state is CategoryQueryLoaded
           ? state.categories.map((category) {
               return DropdownMenuItem<int>(
                 value: category.id, // atau category.name
