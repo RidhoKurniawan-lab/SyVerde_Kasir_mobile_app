@@ -11,8 +11,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/category/get', [CategoryController::class, 'getAll']);
-
     Route::get('/product/get', [ProductController::class, 'getAll']);
 
     Route::get('/unit/get', [UnitController::class, 'getAll']);
@@ -24,5 +22,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/product/insert', [ProductController::class, 'insert']);
 
     Route::post('/product/{product}/update', [ProductController::class, 'update']);
+
+    // Category CRUD
+    Route::get('/category/get', [CategoryController::class, 'getAll']);
+
+    Route::get('/category/{category}/get', [CategoryController::class, 'getByid']);
+
+    Route::post('/category/insert', [CategoryController::class, 'insert']);
+
+    Route::put('/category/{category}/update',[CategoryController::class, 'update']);
+
+    Route::delete('/category/{category}/delete', [CategoryController::class, 'delete']);
 });
 
