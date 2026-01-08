@@ -6,6 +6,7 @@ import 'package:frontend/presentation/screens/layout/header/header_base.dart';
 import 'package:frontend/state/auth_provider.dart';
 import 'package:frontend/presentation/widgets/helper/add_category.dart';
 import 'package:frontend/state/category_provider.dart';
+import 'package:frontend/state/receipt_provider.dart';
 
 class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
   final bool isIcon;
@@ -37,7 +38,12 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
 
           if (!isIcon || category)
             GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                if (header == 'Management Stock') {
+                  ref.read(receiptProvider.notifier).reset();
+                }
+              },
               child: Container(
                 width: 40,
                 height: 40,
@@ -107,15 +113,19 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
             IconButton(
               onPressed: () {
                 if (category) {
-                  AddItemModal.show(context: context, title: 'Add Category', onSubmit: (name) async {
-                    await ref
-                        .read(categorySubmitProvider.notifier)
-                        .insertCategory(request: CategoryModel(name: name));
+                  AddItemModal.show(
+                    context: context,
+                    title: 'Add Category',
+                    onSubmit: (name) async {
+                      await ref
+                          .read(categorySubmitProvider.notifier)
+                          .insertCategory(request: CategoryModel(name: name));
 
-                    await ref
-                        .read(categoryQueryProvider.notifier)
-                        .getCategory();
-                  });
+                      await ref
+                          .read(categoryQueryProvider.notifier)
+                          .getCategory();
+                    },
+                  );
                 } else {
                   Navigator.pushNamed(context, '/add_product');
                 }

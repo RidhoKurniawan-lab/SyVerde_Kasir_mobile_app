@@ -9,19 +9,20 @@ class ReceiptNotifier extends StateNotifier<List<StockUpdateItem>> {
 
 
    Future<void> addProduct({
-    required int productId,
+    required int id,
     required String name,
   }) async {
 
     state = [
       ...state,
       StockUpdateItem(
-        productId: productId,
+        id: id,
         name: name,
-        change: 0,
+        stock: 0,
       ),
     ];
   }
+
 
 
   void debugLog() {
@@ -33,9 +34,9 @@ class ReceiptNotifier extends StateNotifier<List<StockUpdateItem>> {
 
     for (final item in state) {
       debugPrint(
-        'id=${item.productId} | '
+        'id=${item.id} | '
         '${item.name} | '
-        'change=${item.change} | '
+        'change=${item.stock} | '
       );
     }
 
@@ -43,28 +44,38 @@ class ReceiptNotifier extends StateNotifier<List<StockUpdateItem>> {
     debugPrint('===============================');
   }
 
-  void increase(int productId) {
+  Map<String, dynamic> buildPayload() {
+  return {
+    'items': state.map((item) => {
+      'id': item.id,
+      'stock': item.stock,
+    }).toList(),  
+  };
+}
+
+
+  void increase(int id) {
     state = state.map((item) {
-      if (item.productId == productId) {
-        return item.copyWith(change: item.change + 1);
+      if (item.id == id) {
+        return item.copyWith(stock: item.stock + 1);
       }
       return item;
     }).toList();
   }
 
-  void decrease(int productId) {
+  void decrease(int id) {
     state = state.map((item) {
-      if (item.productId == productId) {
-        return item.copyWith(change: item.change - 1);
+      if (item.id == id) {
+        return item.copyWith(stock: item.stock - 1);
       }
       return item;
     })
-    .where((item) => item.change > 0)
+    .where((item) => item.stock > 0)
     .toList();
   }
 
-  void remove(int productId) {
-    state = state.where((e) => e.productId != productId).toList();
+  void remove(int id) {
+    state = state.where((e) => e.id != id).toList();
   }
 
   void reset() {
@@ -72,5 +83,5 @@ class ReceiptNotifier extends StateNotifier<List<StockUpdateItem>> {
   }
 
   List<StockUpdateItem> get changedItems =>
-      state.where((e) => e.change != 0).toList();
+      state.where((e) => e.stock != 0).toList();
 }

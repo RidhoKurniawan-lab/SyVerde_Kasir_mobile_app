@@ -33,5 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/category/{category}/update',[CategoryController::class, 'update']);
 
     Route::delete('/category/{category}/delete', [CategoryController::class, 'delete']);
+
+    Route::post('/product/update-stock', [ProductController::class, 'updateBulkStock']);
 });
 

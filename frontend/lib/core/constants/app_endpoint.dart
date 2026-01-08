@@ -18,6 +18,8 @@ class AppEndpoint {
 
   static String productDelete(int id) => "$baseUrl/api/product/$id/delete";
 
+  static const String updateStock = "$baseUrl/api/product/update-stock";
+
   // Category
   static const String category = "$baseUrl/api/category/get";
 

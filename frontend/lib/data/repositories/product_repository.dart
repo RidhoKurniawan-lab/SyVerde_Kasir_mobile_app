@@ -10,6 +10,16 @@ class ProductRepository {
 
   ProductRepository(this.api);
 
+  Future<Map<String, dynamic>> updateBulkStock({required Map<String, dynamic> payload}) async {
+    try {
+      final response = await api.updateStockBulk(payload: payload);
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
   Future<List<ProductModel>> getProduct() async {
     try {
       final response = await api.getProduct();

@@ -7,7 +7,7 @@ import 'package:frontend/presentation/widgets/common/card_receipt.dart';
 import 'package:frontend/presentation/widgets/common/custom_search_dropdown.dart';
 import 'package:frontend/state/receipt_provider.dart';
 import 'package:frontend/state/product_provider.dart';
-import 'package:frontend/data/models/response/reciept_modal.dart';
+import 'package:frontend/presentation/widgets/common/button_submit_bottom.dart';
 
 class Receipt extends ConsumerStatefulWidget {
   const Receipt({super.key});
@@ -17,12 +17,7 @@ class Receipt extends ConsumerStatefulWidget {
 }
 
 class _ReceiptState extends ConsumerState<Receipt> {
-  final products = [
-    ProductModel(id: 1, name: 'Apple', sku: 'APL-01', price: 12000, stock: 0),
-    ProductModel(id: 2, name: 'Banana', sku: 'BNN-02', price: 8000, stock: 0),
-    ProductModel(id: 3, name: 'Milk', sku: 'MLK-03', price: 15000, stock: 0),
-  ];
-  late final ProviderSubscription _debug;
+  late final ProviderSubscription _productSubmitListener;
 
   @override
   void initState() {
@@ -32,28 +27,27 @@ class _ReceiptState extends ConsumerState<Receipt> {
       ref.read(productQueryProvider.notifier).getProduct();
     });
 
-    _debug = ref.listenManual<List<StockUpdateItem>>(receiptProvider, (
-      _,
-      next,
-    ) {
-      if (!mounted) return;
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ref.read(receiptProvider.notifier).debugLog();
-      });
-    });
+    _productSubmitListener = ref.listenManual<ProductSubmitState>(
+      productSubmitProvider,
+      (prev, next) {
+        if (next is ProductSubmitSuccess && mounted) {
+          ref.read(productQueryProvider.notifier).getProduct();
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 
   @override
   void dispose() {
-    _debug.close();
+    _productSubmitListener.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(productQueryProvider);
+    final stateStock = ref.watch(productSubmitProvider);
     if (state is ProductQueryLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -71,11 +65,26 @@ class _ReceiptState extends ConsumerState<Receipt> {
           category: false,
           header: 'Management Stock',
         ),
+        bottomNavigationBar: BottomSubmitButton(
+          text: stateStock is ProductSubmitLoading ? 'Loading...' : 'Save',
+          onPressed: stateStock is ProductSubmitLoading
+              ? null
+              : () {
+                  final payload = ref
+                      .read(receiptProvider.notifier)
+                      .buildPayload();
+                  ref
+                      .read(productSubmitProvider.notifier)
+                      .updateBulkStock(payload);
+
+                  ref.read(receiptProvider.notifier).reset();
+                },
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 20),
-          
+
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 14),
                 child: CustomSearchDropdown<ProductModel>(
@@ -97,7 +106,9 @@ class _ReceiptState extends ConsumerState<Receipt> {
                             children: [
                               Text(
                                 item.name,
-                                style: const TextStyle(fontWeight: FontWeight.w600),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                               Text(
                                 item.sku,
@@ -116,26 +127,26 @@ class _ReceiptState extends ConsumerState<Receipt> {
                       ),
                     );
                   },
-                          
+
                   onItemSelected: (product) {
                     ref
                         .read(receiptProvider.notifier)
-                        .addProduct(productId: product.id!, name: product.name);
+                        .addProduct(id: product.id!, name: product.name);
                   },
                 ),
               ),
 
               const SizedBox(height: 20),
-          
+
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: receipt.map((item) {
                   return Flexible(
                     fit: FlexFit.loose,
                     child: CardReceipt(
-                      id: item.productId,
+                      id: item.id,
                       name: item.name,
-                      currentStock: item.change,
+                      currentStock: item.stock,
                     ),
                   );
                 }).toList(),

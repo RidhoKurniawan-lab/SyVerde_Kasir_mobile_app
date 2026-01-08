@@ -33,7 +33,7 @@ class ProductQueryError extends ProductQueryState {
   ProductQueryError(this.message);
 }
 
-// 
+//
 abstract class ProductState {}
 
 class ProductInitial extends ProductState {}
@@ -71,8 +71,9 @@ class ProductSubmitValidationError extends ProductSubmitState {
 }
 
 // PROVIDER GET
-final productProvider = 
-StateNotifierProvider<ProductNotifier, ProductState>((ref) => ProductNotifier(ref.read(productRepositoryProvider)),);
+final productProvider = StateNotifierProvider<ProductNotifier, ProductState>(
+  (ref) => ProductNotifier(ref.read(productRepositoryProvider)),
+);
 
 class ProductNotifier extends StateNotifier<ProductState> {
   final ProductRepository repository;
@@ -86,9 +87,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       final product = await repository.getProductById(id: id);
       state = ProductLoaded(product);
     } catch (e) {
-      state = ProductError(
-        e.toString().replaceAll('Exception:', '').trim(),
-      );
+      state = ProductError(e.toString().replaceAll('Exception:', '').trim());
     }
   }
 }
@@ -151,7 +150,7 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
   Future<void> updateProduct({
     required ProductRequest request,
     File? image,
-    required int id
+    required int id,
   }) async {
     state = ProductSubmitLoading();
 
@@ -167,9 +166,7 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
     }
   }
 
-  Future<void> deleteProduct({
-    required int id
-  }) async {
+  Future<void> deleteProduct({required int id}) async {
     state = ProductSubmitLoading();
 
     try {
@@ -183,5 +180,15 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
       }
     }
   }
-}
 
+  Future<void> updateBulkStock(Map<String, dynamic> items) async {
+    if(items.isEmpty) return;
+      state = ProductSubmitLoading();
+    try {
+      await repository.updateBulkStock(payload: items);
+      state = ProductSubmitSuccess();
+    } catch (e) {
+       state = ProductSubmitError(e.toString());
+    }
+  }
+}

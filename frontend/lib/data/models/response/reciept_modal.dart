@@ -1,19 +1,19 @@
 class StockUpdateItem {
-  final int productId;
+  final int id;
   final String name;
-  final int change;
+  final int stock;
 
   const StockUpdateItem({
-    required this.productId,
+    required this.id,
     required this.name,
-    required this.change,
+    required this.stock,
   });
 
-  StockUpdateItem copyWith({int? change, int? productId,}) {
+  StockUpdateItem copyWith({int? stock, int? id,}) {
     return StockUpdateItem(
-      productId: productId ?? this.productId,
+      id: id ?? this.id,
       name: name,
-      change: change ?? this.change,
+      stock: stock ?? this.stock,
     );
   }
 }

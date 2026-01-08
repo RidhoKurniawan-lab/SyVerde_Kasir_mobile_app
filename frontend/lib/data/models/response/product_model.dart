@@ -1,9 +1,6 @@
 import 'package:frontend/data/models/response/category_model.dart';
 import 'package:frontend/data/models/response/unit_model.dart';
 
-import 'package:frontend/data/models/response/category_model.dart';
-import 'package:frontend/data/models/response/unit_model.dart';
-
 class ProductModel {
   final int? id;
   final CategoryModel? category;

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
-import 'package:frontend/core/configs/routes.dart';
-import 'package:frontend/presentation/widgets/helper/Alern.dart';
-import 'package:frontend/state/product_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/state/cart_provider.dart';
 

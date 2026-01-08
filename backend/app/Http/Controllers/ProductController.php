@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -98,5 +99,23 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['deleted' => true]);
+    }
+
+    public function updateBulkStock(Request $request){
+
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.id' => 'required|exists:products,id',
+            'items.*.stock' => 'required|integer|min:0'
+        ]);
+
+        DB::transaction(function () use ($request) {
+            foreach($request->items as $item){
+                Product::where('id', $item['id'])
+                ->increment('stock', $item['stock']);
+            }
+        });
+
+        return response()->json(['updated' => true]);
     }
 }

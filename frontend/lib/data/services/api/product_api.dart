@@ -6,6 +6,29 @@ import 'package:frontend/core/errors/validation_exception.dart';
 import 'dart:io';
 
 class ProductApi {
+
+  // update stock bulk
+
+  Future<Map<String, dynamic>> updateStockBulk({required Map<String, dynamic> payload}) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('Token Expired');
+
+    final response = await http.post(
+      Uri.parse(AppEndpoint.updateStock),
+      headers: {
+        'Content-Type': 'application/json', 
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(payload)
+    );
+    if (response.statusCode != 200) throw Exception('failed to update stock');
+
+    return jsonDecode(response.body);
+  }
+
+
   // get all product
 
   Future<List<dynamic>> getProduct() async {
