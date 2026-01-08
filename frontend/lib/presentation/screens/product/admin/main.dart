@@ -46,14 +46,14 @@ class _ProductState extends ConsumerState<AdminProduct> {
               itemBuilder: (context, index) {
                 final product = productState.products[index];
                 return CardProduct(
-                  id: product.id,
+                  id: product.id!,
                   name: product.name,
                   price: product.price,
                   stock: product.stock,
-                  category: product.category.name,
+                  category: product.category?.name ?? '',
                   sku: product.sku,
                   image: product.image,
-                  unit: product.unit.name,
+                  unit: product.unit?.name ?? '',
                 );
               },
             )

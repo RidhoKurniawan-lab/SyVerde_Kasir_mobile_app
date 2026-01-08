@@ -5,6 +5,8 @@ import 'package:frontend/presentation/screens/layout/admin.dart';
 import 'package:frontend/presentation/screens/layout/kasir.dart';
 import 'package:frontend/presentation/screens/product/admin/add.dart';
 import 'package:frontend/presentation/screens/product/admin/edit.dart';
+import 'package:frontend/presentation/screens/product/admin/receipt.dart';
+import 'package:frontend/presentation/screens/product/user/checkout.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -14,6 +16,8 @@ class AppRoutes {
   static const String addProduct = '/add_product';
   static const String editProduct = '/edit_product';
   static const String category = '/category';
+  static const String checkout = '/checkout';
+  static const String receipt = '/receipt';
 
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
@@ -22,6 +26,8 @@ class AppRoutes {
       kasir: (context) => const KasirLayout(),
       addProduct: (context) => AddProduct(),
       category: (context) => AdminCategory(),
+      checkout: (context) => Checkout(),
+      receipt: (context) => Receipt(),
     };
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/presentation/screens/product/user/main.dart';
 import 'package:frontend/presentation/widgets/navigation/kasir_navbar.dart';
 
 class KasirLayout extends StatefulWidget {
@@ -13,7 +14,7 @@ class _KasirLayoutState extends State<KasirLayout> {
 
   final List<Widget> _pages = [
     Center(child: Text('Home Page')),
-    Center(child: Text('Cashier Page')),
+    UserProduct(),
     Center(child: Text('Member Page')),
     Center(child: Text('More Page')),
   ];
@@ -22,6 +23,7 @@ class _KasirLayoutState extends State<KasirLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
+      extendBody: true,
       bottomNavigationBar: KasirNavbar(
         currentIndex: _currentIndex,
         onTap: (index) {

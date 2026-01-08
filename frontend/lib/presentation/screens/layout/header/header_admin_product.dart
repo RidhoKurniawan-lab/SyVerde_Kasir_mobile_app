@@ -92,7 +92,9 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
             ),
           if (isIcon && !category)
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/receipt');
+              },
               icon: const Icon(
                 Icons.move_to_inbox_outlined,
                 color: AppColor.primary,

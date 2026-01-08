@@ -4,8 +4,6 @@ import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
 import 'package:frontend/presentation/widgets/common/card_category.dart';
 import 'package:frontend/state/category_provider.dart';
-import 'package:frontend/state/product_provider.dart';
-import 'package:flutter/foundation.dart';
 
 class AdminCategory extends ConsumerStatefulWidget {
   const AdminCategory({super.key});

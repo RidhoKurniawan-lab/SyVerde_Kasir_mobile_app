@@ -69,8 +69,8 @@ class _EditProductState extends ConsumerState<EditProduct> {
         _priceProductController.text = next.product.price.toString();
         _skuProductController.text = next.product.sku;
         _deskriptionProductController.text = next.product.description ?? '';
-        selectedCategory = next.product.category.id;
-        selectedUnit = next.product.unit.id;
+        selectedCategory = next.product.category?.id ?? 0;
+        selectedUnit = next.product.unit?.id ?? 0;
         _imageProduct = next.product.image;
       }
     });

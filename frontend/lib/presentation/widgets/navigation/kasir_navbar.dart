@@ -13,32 +13,34 @@ class KasirNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(14),
-      child: SizedBox(
-        height: 80,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColor.primary,
-            borderRadius: BorderRadius.circular(40),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              _NavItem(icon: Icons.home, index: 0, currentIndex: currentIndex, onTap: onTap),
-              SizedBox(width: 18),
-              _NavItem(icon: Icons.storefront_outlined, index: 1, currentIndex: currentIndex, onTap: onTap),
-              SizedBox(width: 18),
-              _NavItem(icon: Icons.person, index: 2, currentIndex: currentIndex, onTap: onTap),
-              SizedBox(width: 18),
-              _NavItem(icon: Icons.settings, index: 3, currentIndex: currentIndex, onTap: onTap),
-            ],
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: SizedBox(
+          height: 80,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColor.primary,
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                _NavItem(icon: Icons.home, index: 0, currentIndex: currentIndex, onTap: onTap),
+                SizedBox(width: 18),
+                _NavItem(icon: Icons.storefront_outlined, index: 1, currentIndex: currentIndex, onTap: onTap),
+                SizedBox(width: 18),
+                _NavItem(icon: Icons.person, index: 2, currentIndex: currentIndex, onTap: onTap),
+                SizedBox(width: 18),
+                _NavItem(icon: Icons.settings, index: 3, currentIndex: currentIndex, onTap: onTap),
+              ],
+            ),
           ),
         ),
       ),

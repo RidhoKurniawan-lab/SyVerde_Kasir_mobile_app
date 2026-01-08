@@ -14,6 +14,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0 # untuk menyimpan data di perangkat dengan aman
   material_symbols_icons: ^4.2785.1 # untuk ikon material symbols
   image_picker: ^1.0.7 # for image picker
+  dropdown_search: ^5.0.6 # for dropdowns search 
 
 dev_dependencies:
   flutter_test:
