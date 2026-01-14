@@ -20,6 +20,9 @@ class AppEndpoint {
 
   static const String updateStock = "$baseUrl/api/product/update-stock";
 
+  static const String insertTransaction = "$baseUrl/api/transaction/insert";
+
+
   // Category
   static const String category = "$baseUrl/api/category/get";
 

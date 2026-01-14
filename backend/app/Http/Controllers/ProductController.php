@@ -3,17 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\TransactionService;
+use App\Services\InvoiceNumberService;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    protected $transactionService;
 
-    public function getAll()
+    public function __construct(TransactionService $transactionService)
     {
-        $products = Product::with(['category', 'unit'])->get();
-        return response()->json($products);
+        $this->transactionService = $transactionService;
+    }
+
+    public function getAll(Request $request)
+    {
+        $query = Product::with(['category', 'unit']);
+
+        if ($request->user()->role->name === 'Cashier') $query->available();
+
+        return response()->json($query->get());
     }
 
     public function getById($id)
@@ -117,5 +129,34 @@ class ProductController extends Controller
         });
 
         return response()->json(['updated' => true]);
+    }
+
+    public function store(Request $request, InvoiceNumberService $invoiceService){
+
+        $request->validate([
+            'payment_method' => 'required|string',
+            'paid_amount' => 'required|numeric',
+            'total' => 'required|numeric',
+            'grand_total' => 'required|numeric',
+            'discount_total' => 'required|numeric',
+            'change_amount' => 'required|numeric',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|integer|exists:products,id',
+            'items.*.qty' => 'required|integer',
+            'items.*.price' => 'required|numeric',
+            'items.*.discount' => 'required|numeric',
+            'items.*.subtotal' => 'required|numeric',
+        ]);
+
+        $transaction = $this->transactionService->createTransaction(
+            $request,
+            $invoiceService
+        );
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Transaksi berhasil',
+            'data' => $transaction,
+        ]);
     }
 }

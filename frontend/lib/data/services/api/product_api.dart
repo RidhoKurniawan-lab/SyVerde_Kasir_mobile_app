@@ -28,6 +28,30 @@ class ProductApi {
     return jsonDecode(response.body);
   }
 
+  // insert transaction
+  Future<Map<String, dynamic>> insertTransaction({required Map<String, dynamic> payload}) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('Token Expired');
+
+    final response = await http.post(
+      Uri.parse(AppEndpoint.insertTransaction),
+      headers: {
+        'Content-Type': 'application/json', 
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(payload)
+    );
+    if (response.statusCode != 200){
+      final body = jsonDecode(response.body);
+      final msg = body['message'] ?? 'Unknown error';
+      throw Exception(msg);
+    }
+
+    return jsonDecode(response.body);
+  }
+
 
   // get all product
 
@@ -163,4 +187,5 @@ class ProductApi {
 
     return jsonDecode(response.body);
   }
+
 }

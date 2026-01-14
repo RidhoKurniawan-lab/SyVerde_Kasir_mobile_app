@@ -1,10 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data/models/response/cart_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:frontend/data/models/response/transaction_model.dart';
+
+
+
+final cartFormProvider =
+    StateNotifierProvider<CheckoutFormNotifier, CheckoutForm>(
+  (ref) => CheckoutFormNotifier(),
+);
+
+class CheckoutFormNotifier extends StateNotifier<CheckoutForm> {
+  CheckoutFormNotifier() : super(const CheckoutForm());
+
+  void setPaymentMethod(String value) {
+    state = state.copyWith(paymentMethod: value);
+  }
+
+  void setPaidAmount(double value) {
+    state = state.copyWith(paidAmount: value);
+  }
+}
 
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartModel>>((ref) => CartNotifier(),);
-
 class CartNotifier extends StateNotifier<List<CartModel>> {
   CartNotifier() : super([]);
+  final discount = 0;
 
   void addItem({
     required int productId,
@@ -16,6 +37,7 @@ class CartNotifier extends StateNotifier<List<CartModel>> {
     if (index >= 0) {
       state[index].qty += 1;
       state = [...state];
+      debugPrint('UPDATE QTY → ${state[index].name} = ${state[index].qty}');
     } else {
       state = [
         ...state,
@@ -25,10 +47,41 @@ class CartNotifier extends StateNotifier<List<CartModel>> {
           price: price,
         ),
       ];
+      debugPrint('ADD ITEM → $name');
     }
+    _logCart();
   }
 
-  // ➕ tambah qty
+  void _logCart() {
+    debugPrint('------ CART STATE ------');
+    for (final item in state) {
+      debugPrint(
+        '${item.name} | qty=${item.qty} | price=${item.price} | subtotal=${item.subtotal}',
+      );
+    }
+    debugPrint('TOTAL = $total');
+    debugPrint('------------------------');
+  }
+
+  Map<String, dynamic> buildPayload(String payment, double paid, double discountTotal){
+    return {
+    'payment_method': payment,
+    'paid_amount': paid,
+    'total': total,
+    'discount_total': discount,
+    'grand_total': total - discount,
+    'change_amount': paid - (total - discount),
+    'items': state.map((item) => {
+      'product_id': item.productId,
+      'qty': item.qty,
+      'price': item.price,
+      'discount': 0,
+      'subtotal': item.subtotal
+    }).toList(),  
+  };
+  }
+
+  // increment qty
   void increaseQty(int productId) {
     state = state.map((item) {
       if (item.productId == productId) {
@@ -38,7 +91,7 @@ class CartNotifier extends StateNotifier<List<CartModel>> {
     }).toList();
   }
 
-  // ➖ kurang qty
+  // decrement qty
   void decreaseQty(int productId) {
     state = state
         .map((item) {
@@ -65,5 +118,4 @@ class CartNotifier extends StateNotifier<List<CartModel>> {
 
   double get total =>
       state.fold(0, (sum, item) => sum + item.subtotal);
-
 }

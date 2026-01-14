@@ -20,6 +20,16 @@ class ProductRepository {
     }
   }
 
+  Future<Map<String, dynamic>> insertTransaction({required Map<String, dynamic> payload}) async {
+    try {
+      final response = await api.insertTransaction(payload: payload);
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
   Future<List<ProductModel>> getProduct() async {
     try {
       final response = await api.getProduct();

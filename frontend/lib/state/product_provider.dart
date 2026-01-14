@@ -191,4 +191,17 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
        state = ProductSubmitError(e.toString());
     }
   }
+
+  Future<void> insertTransaction(Map<String, dynamic> items) async {
+    if(items.isEmpty) return;
+      state = ProductSubmitLoading();
+    try {
+      await repository.insertTransaction(payload: items);
+      state = ProductSubmitSuccess();
+    } catch (e) {
+       state = ProductSubmitError(e.toString());
+    }
+  }
+
+  
 }
