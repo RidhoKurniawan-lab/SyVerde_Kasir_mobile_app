@@ -34,10 +34,12 @@ class _CheckoutState extends ConsumerState<Checkout> {
       productSubmitProvider,
       (prev, next) async {
         if (next is ProductSubmitSuccess && mounted)  {
-          // final 
-          // final confirm = await showSuccessConfirmationDialog(context, change: )
+          final confirm = await showSuccessConfirmationDialog(context, change: (ref.watch(cartFormProvider).paidAmount - ref.watch(cartProvider.notifier).total).toString());
+          if (confirm == true) {
           ref.read(productQueryProvider.notifier).getProduct();
           Navigator.pop(context);
+          ref.read(cartProvider).clear();
+          }
         }
       },
     );

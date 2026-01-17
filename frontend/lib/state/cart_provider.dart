@@ -118,4 +118,5 @@ class CartNotifier extends StateNotifier<List<CartModel>> {
 
   double get total =>
       state.fold(0, (sum, item) => sum + item.subtotal);
+  
 }
