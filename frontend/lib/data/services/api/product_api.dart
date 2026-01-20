@@ -71,6 +71,7 @@ class ProductApi {
     return data;
   }
 
+// get by ID
   Future<Map<String, dynamic>> getProductById({required int id}) async {
     final token = await SecureStorage.getToken();
 

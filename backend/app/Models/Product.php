@@ -45,4 +45,8 @@ class Product extends Model
     {
         return $query->where('stock', '>', 0);
     }
+
+    public function transactionItems(){
+        return $this->hasMany(TransactionItems::class);
+    }
 }

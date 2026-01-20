@@ -7,6 +7,8 @@ import 'package:frontend/presentation/screens/product/admin/add.dart';
 import 'package:frontend/presentation/screens/product/admin/edit.dart';
 import 'package:frontend/presentation/screens/product/admin/receipt.dart';
 import 'package:frontend/presentation/screens/product/user/checkout.dart';
+import 'package:frontend/presentation/screens/more/transaction.dart';
+import 'package:frontend/presentation/screens/more/detail_transaction.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -18,6 +20,8 @@ class AppRoutes {
   static const String category = '/category';
   static const String checkout = '/checkout';
   static const String receipt = '/receipt';
+  static const String transaction = '/transaction';
+  static const String detailTransaction = '/transaction/';
 
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
@@ -28,6 +32,7 @@ class AppRoutes {
       category: (context) => AdminCategory(),
       checkout: (context) => Checkout(),
       receipt: (context) => Receipt(),
+      transaction: (context) => Transaction(),
     };
   }
 
@@ -38,9 +43,15 @@ class AppRoutes {
         if (id == null) return _errorRoute('Product ID missing!');
         return MaterialPageRoute(builder: (_) => EditProduct(id: id));
 
+      case detailTransaction:
+      final id = settings.arguments as int?;
+        if (id == null) return _errorRoute('Transaction ID missing!');
+        return MaterialPageRoute(builder: (_) => DetailTransaction(id: id));
       default:
         return null;
     }
+
+
   }
 
   static MaterialPageRoute _errorRoute(String message) {

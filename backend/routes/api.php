@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Product;
+use App\Models\Transaction;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -36,6 +38,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/product/update-stock', [ProductController::class, 'updateBulkStock']);
 
+
+    //Transaction
     Route::post('/transaction/insert', [ProductController::class, 'store']);
+
+    Route::get('/transaction/get', [TransactionController::class, 'getAll']);
+
+    Route::get('/transaction/{transaction}/get', [TransactionController::class, 'getById']);
+
 });
 

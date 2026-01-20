@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/product/user/main.dart';
 import 'package:frontend/presentation/widgets/navigation/kasir_navbar.dart';
+import 'package:frontend/presentation/screens/more/more.dart';
 
 class KasirLayout extends StatefulWidget {
   const KasirLayout({super.key});
@@ -16,7 +17,7 @@ class _KasirLayoutState extends State<KasirLayout> {
     Center(child: Text('Home Page')),
     UserProduct(),
     Center(child: Text('Member Page')),
-    Center(child: Text('More Page')),
+    MoreMenu(),
   ];
 
   @override

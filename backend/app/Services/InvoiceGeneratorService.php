@@ -6,9 +6,9 @@ use App\Models\Transaction;
 
 use function Symfony\Component\Clock\now;
 
-class InvoiceNumberService
+class InvoiceGeneratorService
 {
-    public function generate(): string
+    public function generateInvoice(): string
     {
         $year = now()->format('Y');
 

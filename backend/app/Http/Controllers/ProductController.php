@@ -7,7 +7,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\TransactionService;
-use App\Services\InvoiceNumberService;
+use App\Services\InvoiceGeneratorService;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -131,7 +131,7 @@ class ProductController extends Controller
         return response()->json(['updated' => true]);
     }
 
-    public function store(Request $request, InvoiceNumberService $invoiceService){
+    public function store(Request $request, InvoiceGeneratorService $invoiceService){
 
         $request->validate([
             'payment_method' => 'required|string',

@@ -5,15 +5,15 @@ use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Services\InvoiceNumberService;
+use App\Services\InvoiceGeneratorService;
 
 class TransactionService
 {
-    public function createTransaction(Request $request, InvoiceNumberService $invoiceService)
+    public function createTransaction(Request $request, InvoiceGeneratorService $invoiceService)
     {
         return DB::transaction(function () use ($request, $invoiceService) {
             $transaction = Transaction::create([
-                'invoice_number' => $invoiceService->generate(),
+                'invoice_number' => $invoiceService->generateInvoice(),
                 'user_id' => $request->user()->id,
                 'payment_method' => $request->payment_method,
                 'paid_amount' => $request->paid_amount,

@@ -33,7 +33,7 @@ class ProductQueryError extends ProductQueryState {
   ProductQueryError(this.message);
 }
 
-//
+// singel product
 abstract class ProductState {}
 
 class ProductInitial extends ProductState {}
@@ -88,6 +88,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       state = ProductLoaded(product);
     } catch (e) {
       state = ProductError(e.toString().replaceAll('Exception:', '').trim());
+      
     }
   }
 }
