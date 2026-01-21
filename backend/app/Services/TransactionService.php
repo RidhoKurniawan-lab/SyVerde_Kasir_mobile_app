@@ -13,7 +13,7 @@ class TransactionService
     {
         return DB::transaction(function () use ($request, $invoiceService) {
             $transaction = Transaction::create([
-                'invoice_number' => $invoiceService->generateInvoice(),
+                'invoice_number' => $invoiceService->generateInvoice(now()),
                 'user_id' => $request->user()->id,
                 'payment_method' => $request->payment_method,
                 'paid_amount' => $request->paid_amount,

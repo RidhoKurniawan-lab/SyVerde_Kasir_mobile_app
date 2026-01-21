@@ -35,8 +35,8 @@ class AppEndpoint {
   static String categoryDelete(int id) => "$baseUrl/api/category/$id/delete";
 
   // Transaction 
-  static const String transactionGet = "$baseUrl/api/transaction/get";
-
+  static String transactionGet(int page) => "$baseUrl/api/transaction/get?page=$page";
+  
   static String transactionGetByid(int id) => "$baseUrl/api/transaction/$id/get";
 
 }

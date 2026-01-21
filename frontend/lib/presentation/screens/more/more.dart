@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
+import 'package:frontend/presentation/screens/layout/header/header_kasir.dart';
 
 class MoreMenu extends StatelessWidget {
   const MoreMenu({super.key});
@@ -12,10 +13,10 @@ class MoreMenu extends StatelessWidget {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         backgroundColor: AppColor.primarywhite,
-        title: const HeaderAdminProduct(
-          isIcon: false,
-          category: false,
+        title: const HeaderKasir(
           header: 'More Menu',
+          isHeaderShow: true,
+          name: true,
         ),
       ),
       body: Container(

@@ -4,6 +4,7 @@ import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/core/utils/currency_rupiah.dart';
 import 'package:frontend/core/utils/date_time.dart';
 import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
+import 'package:frontend/presentation/screens/layout/header/header_kasir.dart';
 import 'package:frontend/state/transaction_provider.dart';
 
 class DetailTransaction extends ConsumerStatefulWidget {
@@ -37,10 +38,10 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         backgroundColor: AppColor.primarywhite,
-        title: const HeaderAdminProduct(
-          isIcon: false,
-          category: false,
-          header: 'More Menu',
+        title: const HeaderKasir(
+          isHeaderShow: true,
+          header: 'Detail Transaction',
+          back: true,
         ),
       ),
       body: state is TransactionLoading
@@ -172,7 +173,7 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
                           ),
                         ),
                         Text(
-                          formatRupiah(state.transaction.total),
+                          formatRupiah(state.transaction.total!),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
@@ -194,7 +195,7 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
                           ),
                         ),
                         Text(
-                          state.transaction.paymentMethod,
+                          state.transaction.paymentMethod!,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,

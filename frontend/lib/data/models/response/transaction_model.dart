@@ -24,13 +24,13 @@ class TransactionModel {
   final String? invoiceNumber;
   final int? userId;
 
-  final double total;
-  final double discountTotal;
-  final double grandTotal;
+  final double? total;
+  final double? discountTotal;
+  final double? grandTotal;
 
-  final String paymentMethod;
-  final double paidAmount;
-  final double changeAmount;
+  final String? paymentMethod;
+  final double? paidAmount;
+  final double? changeAmount;
 
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -41,12 +41,12 @@ class TransactionModel {
     this.id,
     this.invoiceNumber,
     this.userId,
-    required this.total,
-    required this.discountTotal,
-    required this.grandTotal,
-    required this.paymentMethod,
-    required this.paidAmount,
-    required this.changeAmount,
+    this.total,
+    this.discountTotal,
+    this.grandTotal,
+    this.paymentMethod,
+    this.paidAmount,
+    this.changeAmount,
     this.createdAt,
     this.updatedAt,
     this.items,
@@ -58,12 +58,12 @@ class TransactionModel {
       id: json['id'],
       invoiceNumber: json['invoice_number'],
       userId: json['user_id'],
-      total: (json['total'] as num).toDouble(),
-      discountTotal: (json['discount_total'] as num).toDouble(),
-      grandTotal: (json['grand_total'] as num).toDouble(),
+      total: (json['total'] as num?)?.toDouble(),
+      discountTotal: (json['discount_total'] as num?)?.toDouble(),
+      grandTotal: (json['grand_total'] as num?)?.toDouble(),
       paymentMethod: json['payment_method'],
-      paidAmount: (json['paid_amount'] as num).toDouble(),
-      changeAmount: (json['change_amount'] as num).toDouble(),
+      paidAmount: (json['paid_amount'] as num?)?.toDouble(),
+      changeAmount: (json['change_amount'] as num?)?.toDouble(),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,

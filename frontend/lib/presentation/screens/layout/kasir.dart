@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/presentation/screens/dashboard/kasir.dart';
 import 'package:frontend/presentation/screens/product/user/main.dart';
 import 'package:frontend/presentation/widgets/navigation/kasir_navbar.dart';
 import 'package:frontend/presentation/screens/more/more.dart';
@@ -14,7 +15,7 @@ class _KasirLayoutState extends State<KasirLayout> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    Center(child: Text('Home Page')),
+    KasirDashboard(),
     UserProduct(),
     Center(child: Text('Member Page')),
     MoreMenu(),

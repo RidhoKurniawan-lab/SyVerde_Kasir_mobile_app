@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/core/utils/currency_rupiah.dart';
 import 'package:frontend/state/cart_provider.dart';
 
 class CardProductUser extends ConsumerWidget {
@@ -96,7 +97,7 @@ class CardProductUser extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
 
-                Text(price.toString(), style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),),
+                Text(formatRupiah(price), style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),),
 
                 const SizedBox(height: 10),
               ],

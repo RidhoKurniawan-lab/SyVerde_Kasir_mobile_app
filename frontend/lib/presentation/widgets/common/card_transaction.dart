@@ -23,7 +23,7 @@ class TransactionCard extends StatelessWidget {
         Navigator.pushNamed(context, AppRoutes.detailTransaction, arguments: id);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
           color: AppColor.secondarywhite,

@@ -28,17 +28,22 @@ class DatabaseSeeder extends Seeder
 
         Unit::insert([
             [
-                'name' => 'Kg',
+                'name' => '200Gr',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'name' => 'Gram',
+                'name' => '100Gr',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'name' => 'Ons',
+                'name' => '250Gr',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => '500Gr',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -57,6 +62,16 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Takeda Kaneshiro',
             'email' => 'kasir@gmail.com',
+            'password' => 'kasir123',
+            'is_active' => false,
+            'role_id' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        User::create([
+            'name' => 'Momoko Kawasaki',
+            'email' => 'kasir2@gmail.com',
             'password' => 'kasir123',
             'is_active' => false,
             'role_id' => 2,
@@ -86,29 +101,11 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now()
             ]
         ]);
-        Product::insert([
-            [
-                'category_id' => 1,
-                'sku' => 'AR-001',
-                'name' => 'Kopi Arabika Gayo',
-                'price' => 75000.00,
-                'unit_id' => 2,
-                'image' => 'image',
-                'description' => '',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'category_id' => 2,
-                'sku' => 'RB-001',
-                'name' => 'Kopi Robusta Lampung',
-                'price' => 60000.00,
-                'unit_id' => 1,
-                'image' => 'image',
-                'description' => '',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+
+         $this->call([
+            ProductSeeders::class,
+            TransactionSeeders::class,
         ]);
+
     }
 }

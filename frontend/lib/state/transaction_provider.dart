@@ -39,11 +39,20 @@ abstract class TransactionQueryState {}
 
 class TransactionQueryInitial extends TransactionQueryState {}
 
-class TransactionQueryLoading extends TransactionQueryState {}
+class TransactionQueryLoading extends TransactionQueryState {
+  final int? currentPage;
+  TransactionQueryLoading(this.currentPage);
+}
 
 class TransactionQueryLoaded extends TransactionQueryState {
   final List<TransactionModel> transactions;
-  TransactionQueryLoaded(this.transactions);
+  final int? currentPage;
+  final bool isLastPage;
+  TransactionQueryLoaded({
+   required this.transactions,
+   required this.currentPage,
+   required this.isLastPage
+   }); 
 }
 
 // PROVIDER GET
@@ -65,9 +74,6 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
       debugPrint('Data : $transaction');
       state = TransactionLoaded(transaction);
     } catch (e) {
-      debugPrint('ERROR GET TRANSACTION BY ID');
-      debugPrint(e.toString());
-      state = TransactionError(e.toString());
       state = TransactionError(
         e.toString().replaceAll('Exception:', '').trim(),
       );
@@ -92,12 +98,16 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
 
   TransactionQueryNotifier(this.repository) : super(TransactionQueryInitial());
 
-  Future<void> getTransaction() async {
-    state = TransactionQueryLoading();
+  Future<void> getTransaction({int page = 1}) async {
+    state = TransactionQueryLoading(page);
 
     try {
-      final transactions = await repository.getTransaction();
-      state = TransactionQueryLoaded(transactions);
+      final transactions = await repository.getTransaction(page: page);
+      state = TransactionQueryLoaded(
+        transactions: transactions.data,
+        currentPage: page,
+        isLastPage: transactions.nextPageUrl == null
+      );
     } catch (e) {
       state = TransactionQueryError(
         e.toString().replaceAll('Exception:', '').trim(),

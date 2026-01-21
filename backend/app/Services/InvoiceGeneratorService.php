@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Transaction;
+use Carbon\Carbon;
 
+use App\Models\Transaction;
 use function Symfony\Component\Clock\now;
 
 class InvoiceGeneratorService
 {
-    public function generateInvoice(): string
+    public function generateInvoice(Carbon $date): string
     {
-        $year = now()->format('Y');
+        $year = $date->format('Y');
 
         $lastInvoice = Transaction::whereYear('created_at', $year)
         ->orderByDesc('id')

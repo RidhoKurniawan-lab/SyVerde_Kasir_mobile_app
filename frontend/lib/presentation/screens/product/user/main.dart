@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/constants/app_color.dart';
+import 'package:frontend/presentation/screens/dashboard/kasir.dart';
 import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
+import 'package:frontend/presentation/screens/layout/header/header_kasir.dart';
 import 'package:frontend/state/cart_provider.dart';
 import 'package:frontend/state/product_provider.dart';
 import 'package:frontend/presentation/widgets/common/card_product_user.dart';
@@ -35,10 +37,8 @@ class _ProductState extends ConsumerState<UserProduct> {
 
     return Scaffold(
       backgroundColor: AppColor.primarywhite,
-      appBar: const HeaderAdminProduct(
-        isIcon: true,
-        category: false,
-        header: 'Management Product',
+      appBar: const HeaderKasir(
+        search: true,
       ),
       body: productState is ProductQueryLoading
           ? const Center(child: CircularProgressIndicator())

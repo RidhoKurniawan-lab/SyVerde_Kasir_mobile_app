@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 class TransactionController extends Controller
 {
     public function getAll() {
-        $transaction =Transaction::latest()->get();
+        $transaction =Transaction::select([
+            'id',
+            'invoice_number',
+            'created_at'
+        ])->latest()->simplePaginate(20);
 
         return response()->json($transaction);
     }
