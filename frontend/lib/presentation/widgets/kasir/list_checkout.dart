@@ -143,25 +143,24 @@ class _ListCheckoutState extends ConsumerState<ListCheckout> {
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColor.green28,
-                      ),
-                      child: const Center(
-                        child: RotatedBox(
-                          quarterTurns: 2,
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: AppColor.green100,
-                            size: 28,
-                          ),
-                        ),
+                  
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: ref.watch(cartFormProvider).paymentMethod.isEmpty ? 'cash' : ref.watch(cartFormProvider).paymentMethod,
+                        items: const [
+                          DropdownMenuItem(value: 'cash', child: Text('Cash')),
+                          DropdownMenuItem(value: 'qris', child: Text('Non-Cash')),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            ref.read(cartFormProvider.notifier).setPaymentMethod(value);
+                            if (value == 'qris') {
+                              ref.read(cartFormProvider.notifier).setPaidAmount(subtotal - discount);
+                            }
+                          }
+                        },
                       ),
                     ),
                   ),
@@ -277,69 +276,70 @@ class _ListCheckoutState extends ConsumerState<ListCheckout> {
             ),
           ),
 
-          const SizedBox(height: 20),
-
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColor.black10,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Container(
-              margin: const EdgeInsets.all(10),
-              height: 50,
+          if (ref.watch(cartFormProvider).paymentMethod != 'qris') ...[
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColor.secondarywhite,
+                color: AppColor.black10,
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 5,
-                      bottom: 5,
-                      left: 5,
-                      right: 14,
-                    ),
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.only(left: 2),
-                    decoration: BoxDecoration(
-                      color: AppColor.primary,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        bottomLeft: Radius.circular(25),
-                        bottomRight: Radius.circular(10),
-                        topRight: Radius.circular(10),
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                height: 50,
+                decoration: BoxDecoration(
+                  color: AppColor.secondarywhite,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 5,
+                        bottom: 5,
+                        left: 5,
+                        right: 14,
+                      ),
+                      height: 40,
+                      width: 40,
+                      padding: const EdgeInsets.only(left: 2),
+                      decoration: BoxDecoration(
+                        color: AppColor.primary,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.attach_money,
+                        color: AppColor.secondarywhite,
+                        size: 28,
                       ),
                     ),
-                    child: Icon(
-                      Icons.attach_money,
-                      color: AppColor.secondarywhite,
-                      size: 28,
-                    ),
-                  ),
 
-                  Expanded(
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: const InputDecoration(
-                        border: InputBorder.none, 
-                        isCollapsed: true,
-                        hintText: 'Masukkan nominal',
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          RupiahInputFormatter(),
+                        ],
+                        decoration: const InputDecoration(
+                          border: InputBorder.none, 
+                          isCollapsed: true,
+                          hintText: 'Masukkan nominal',
+                        ),
+                        onChanged: (value) {
+                          ref.read(cartFormProvider.notifier).setPaidAmount(parseRupiah(value));
+                        },
                       ),
-                      onChanged: (value) {
-                        ref.read(cartFormProvider.notifier).setPaidAmount(double.tryParse(value) ?? 0);
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

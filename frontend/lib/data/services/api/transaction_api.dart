@@ -9,14 +9,15 @@ class TransactionApi {
     int? limit,
     int? userId,
     String? startDate,
-    String? endDate
+    String? endDate,
+    String? query,
   }) async {
     final token = await SecureStorage.getToken();
 
     if (token == null) throw Exception('token expired');
 
     final response = await http.get(
-      Uri.parse(AppEndpoint.transactionGet(page, limit, startDate, endDate, userId)),
+      Uri.parse(AppEndpoint.transactionGet(page, limit, startDate, endDate, userId, query: query)),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
@@ -42,13 +43,13 @@ class TransactionApi {
     return data;
   }
 
-  Future<Map<String, dynamic>> getTransactionSummary() async {
+  Future<Map<String, dynamic>> getTransactionSummary({String period = 'today'}) async {
     final token = await SecureStorage.getToken();
 
     if (token == null) throw Exception('token expired');
 
     final response = await http.get(
-      Uri.parse(AppEndpoint.transactionSummey),
+      Uri.parse("${AppEndpoint.transactionSummey}?period=$period"),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
@@ -93,6 +94,51 @@ class TransactionApi {
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
 
+    return data;
+  }
+
+  Future<Map<String, dynamic>> getMonthlySummary() async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('token expired');
+
+    final response = await http.get(
+      Uri.parse(AppEndpoint.transactionMonthlySummary),
+      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) throw Exception('failed to load data');
+
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  Future<Map<String, dynamic>> getTransactionSummaryByCashier(int cashierId, {String period = 'today'}) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('token expired');
+
+    final response = await http.get(
+      Uri.parse("${AppEndpoint.transactionSummaryByCashier}?cashier_id=$cashierId&period=$period"),
+      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) throw Exception('failed to load data');
+
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  Future<Map<String, dynamic>> getBestSeller({String period = 'today'}) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('token expired');
+
+    final response = await http.get(
+      Uri.parse("${AppEndpoint.productBestSeller}?period=$period"),
+      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) throw Exception('failed to load data');
+
+    final data = jsonDecode(response.body);
     return data;
   }
 }

@@ -11,6 +11,8 @@ use App\Services\TransactionService;
 use App\Services\InvoiceGeneratorService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
 
 class ProductController extends Controller
 {
@@ -229,5 +231,39 @@ class ProductController extends Controller
             ->simplePaginate($limit);
 
         return response()->json($activity);
+    }
+
+    public function bestSeller(Request $request)
+    {
+        $period = $request->query('period', 'today');
+        
+        $startDate = Carbon::today();
+        $endDate = Carbon::today();
+
+        if ($period === 'this_month') {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+        } elseif ($period === 'last_month') {
+            $startDate = Carbon::now()->subMonth()->startOfMonth();
+            $endDate = Carbon::now()->subMonth()->endOfMonth();
+        }
+
+        $bestSellers = DB::table('transaction_items')
+            ->join('products', 'products.id', '=', 'transaction_items.product_id')
+            ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
+            ->whereBetween('transactions.created_at', [$startDate->format('Y-m-d') . ' 00:00:00', $endDate->format('Y-m-d') . ' 23:59:59'])
+            ->select(
+                'transaction_items.product_id',
+                'products.name as product_name',
+                DB::raw('SUM(transaction_items.qty) as total_qty')
+            )
+            ->groupBy('transaction_items.product_id', 'product_name')
+            ->orderByDesc('total_qty')
+            ->limit(5)
+            ->get();
+
+        return response()->json([
+            'data' => $bestSellers
+        ]);
     }
 }

@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/product/update-stock', [ProductController::class, 'updateBulkStock']);
 
 
-    //Transaction
+    //Transaction 
     Route::post('/transaction/insert', [ProductController::class, 'store']);
 
     Route::get('/transaction/get', [TransactionController::class, 'getAll']);
@@ -54,6 +54,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction/{transaction}/get', [TransactionController::class, 'getById']);
 
     Route::get('/transaction/get/summery', [TransactionController::class, 'summeryToday']);
+
+    Route::get('/transaction/monthly-summary', [TransactionController::class, 'monthlySummary']);
+
+    Route::get('/transaction/get/summery-by-cashier', [TransactionController::class, 'summeryByCashier']);
+
+    Route::get('/product/best-seller', [ProductController::class, 'bestSeller']);
+    Route::get('/product/search', [\App\Http\Controllers\ProductSearchController::class, 'search']);
 
 
 });

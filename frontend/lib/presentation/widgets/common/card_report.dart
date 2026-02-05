@@ -8,6 +8,7 @@ class ReportCard extends StatelessWidget {
   final String headerText;
   final String mainText;
   final double bottomText;
+  final String comparisonLabel;
 
   const ReportCard({
     super.key,
@@ -17,10 +18,15 @@ class ReportCard extends StatelessWidget {
     required this.headerText,
     required this.mainText,
     required this.bottomText,
+    this.comparisonLabel = 'from yesterday',
   });
 
   @override
   Widget build(BuildContext context) {
+    // Clamp to -100 to 100 and round to integer
+    final int clampedPercent = bottomText.clamp(-100.0, 100.0).round();
+    final bool isNegative = clampedPercent < 0;
+
     return Container(
       width: 182,
       height: 95,
@@ -87,14 +93,14 @@ class ReportCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Text(
-              '${bottomText.toString()} form Yesterday',
+              '${isNegative ? "" : "+"}$clampedPercent% $comparisonLabel',
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 9, 
                 fontWeight: 
                 FontWeight.w400, 
                 fontStyle: FontStyle.italic,
-                color: bottomText.isNegative ? AppColor.red100 : AppColor.green100
+                color: isNegative ? AppColor.red100 : AppColor.green100
                 ),
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/constants/app_color.dart';
+import 'package:frontend/presentation/widgets/common/primary_button.dart';
 
 Future<bool?> showSuccessConfirmationDialog(BuildContext context, {String? change}) {
   return showDialog<bool>(
@@ -9,12 +9,26 @@ Future<bool?> showSuccessConfirmationDialog(BuildContext context, {String? chang
       title: const Text('Transaction Succees'),
       content: Text('Kembalian ${change ?? "Terimakasih Sudah belanja"}?'),
       actions: [
-        ElevatedButton(
-          onPressed: () => Navigator.of(context).pop(true), // confirm
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColor.red100,
-          ),
-          child: const Text('Delete', style: TextStyle(color: AppColor.black100),),
+        PrimaryButton(
+          text: 'Delete',
+          onPressed: () => Navigator.of(context).pop(true),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<bool?> showSimpleSuccessDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: const Text('Success'),
+      content: const Text('Transaction completed successfully.'),
+      actions: [
+        PrimaryButton(
+          text: 'OK',
+          onPressed: () => Navigator.of(context).pop(true),
         ),
       ],
     ),

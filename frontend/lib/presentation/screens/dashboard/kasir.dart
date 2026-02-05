@@ -19,6 +19,7 @@ class KasirDashboard extends ConsumerStatefulWidget {
 class _KasirDashboard extends ConsumerState<KasirDashboard> {
   late DateTime _now;
   late Timer _timer;
+  Timer? _pollingTimer;
 
   @override
   void initState() {
@@ -32,6 +33,11 @@ class _KasirDashboard extends ConsumerState<KasirDashboard> {
       });
     });
 
+    _pollingTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (!mounted) return;
+      ref.read(transactionProvider.notifier).getTransactionSummary(silent: true);
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(transactionProvider);
       if (state is! TransactionLoadedSummery) {
@@ -43,6 +49,7 @@ class _KasirDashboard extends ConsumerState<KasirDashboard> {
   @override
   void dispose() {
     _timer.cancel();
+    _pollingTimer?.cancel();
     super.dispose();
   }
 
@@ -136,7 +143,7 @@ class _KasirDashboard extends ConsumerState<KasirDashboard> {
                   iconBgColor: AppColor.blue28,
                   iconColor: AppColor.blue100,
                   icon: Icons.trending_up,
-                  headerText: 'Seles',  
+                  headerText: 'Sales',  
                   mainText: state is TransactionLoadedSummery ? formatRupiah(state.summery.cash + state.summery.nonCash): '0',
                   bottomText: 'Net after refunds & voids',
                 ),

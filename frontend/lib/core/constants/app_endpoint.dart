@@ -37,7 +37,7 @@ class AppEndpoint {
   static String categoryDelete(int id) => "$baseUrl/api/category/$id/delete";
 
   // Transaction 
-  static String transactionGet(int page, int? limit, String? startDate, String? endDate, int? userId) => "$baseUrl/api/transaction/get?page=$page&limit=$limit&user_id=$userId&start_date=$startDate&end_date=$endDate";
+  static String transactionGet(int page, int? limit, String? startDate, String? endDate, int? userId, {String? query}) => "$baseUrl/api/transaction/get?page=$page&limit=$limit&user_id=$userId&start_date=$startDate&end_date=$endDate&query=${query ?? ''}";
 
   static String stockGet(int page, int? limit) => "$baseUrl/api/product/get/paginate?page=$page&limit=$limit";
   
@@ -47,4 +47,11 @@ class AppEndpoint {
 
   static const String transactionSummey = "$baseUrl/api/transaction/get/summery";
 
+  static const String transactionMonthlySummary = "$baseUrl/api/transaction/monthly-summary";
+
+  static const String transactionSummaryByCashier = "$baseUrl/api/transaction/get/summery-by-cashier";
+
+  static const String productBestSeller = "$baseUrl/api/product/best-seller";
+  
+  static String productSearch(String query) => "$baseUrl/api/product/search?query=$query";
 }

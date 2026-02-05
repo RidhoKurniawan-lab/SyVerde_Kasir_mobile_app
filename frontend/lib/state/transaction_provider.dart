@@ -4,6 +4,8 @@ import 'package:frontend/data/models/response/audit_model.dart';
 import 'package:frontend/data/models/response/summery_model.dart';
 import 'package:frontend/data/models/response/product_model.dart';
 import 'package:frontend/data/models/response/transaction_model.dart';
+import 'package:frontend/data/models/response/monthly_summary_model.dart';
+import 'package:frontend/data/models/response/best_seller_model.dart';
 import 'package:frontend/data/services/api/transaction_api.dart';
 import 'package:frontend/data/repositories/transaction_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -110,7 +112,7 @@ class AuditQueryError extends AuditQueryState {
 
 // PROVIDER GET
 final transactionProvider =
-    StateNotifierProvider.autoDispose<TransactionNotifier, TransactionState>(
+    StateNotifierProvider<TransactionNotifier, TransactionState>(
       (ref) => TransactionNotifier(ref.read(transactionRepositoryProvider)),
     );
 
@@ -133,11 +135,13 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     }
   }
 
-  Future<void> getTransactionSummary() async {
-    state = TransactionLoading();
+  Future<void> getTransactionSummary({String period = 'today', bool silent = false}) async {
+    if (!silent) {
+      state = TransactionLoading();
+    }
 
     try {
-      final summery = await repository.getTransactionSummery();
+      final summery = await repository.getTransactionSummery(period: period);
       debugPrint('Data $summery');
       state = TransactionLoadedSummery(summery);
     } catch (e, stack) {
@@ -145,6 +149,70 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
       debugPrintStack(stackTrace: stack);
 
       state = TransactionError(e.toString());
+    }
+  }
+}
+
+final transactionSummaryByCashierProvider =
+    StateNotifierProvider<TransactionSummaryByCashierNotifier, TransactionState>(
+  (ref) => TransactionSummaryByCashierNotifier(ref.read(transactionRepositoryProvider)),
+);
+
+class TransactionSummaryByCashierNotifier extends StateNotifier<TransactionState> {
+  final TransactionRepository repository;
+
+  TransactionSummaryByCashierNotifier(this.repository) : super(TransactionInitial());
+
+  Future<void> getTransactionSummaryByCashier(int cashierId, {String period = 'today'}) async {
+    state = TransactionLoading();
+
+    try {
+      final summery = await repository.getTransactionSummeryByCashier(cashierId, period: period);
+      state = TransactionLoadedSummery(summery);
+    } catch (e) {
+      state = TransactionError(e.toString());
+    }
+  }
+}
+
+final monthlyTransactionProvider = FutureProvider.autoDispose<List<MonthlySummary>>((ref) async {
+  return ref.read(transactionRepositoryProvider).getMonthlySummary();
+});
+
+abstract class BestSellerState {}
+
+class BestSellerInitial extends BestSellerState {}
+
+class BestSellerLoading extends BestSellerState {}
+
+class BestSellerLoaded extends BestSellerState {
+  final List<BestSeller> products;
+  BestSellerLoaded(this.products);
+}
+
+class BestSellerError extends BestSellerState {
+  final String message;
+  BestSellerError(this.message);
+}
+
+final bestSellerProductProvider =
+    StateNotifierProvider<BestSellerNotifier, BestSellerState>(
+  (ref) => BestSellerNotifier(ref.read(transactionRepositoryProvider)),
+);
+
+class BestSellerNotifier extends StateNotifier<BestSellerState> {
+  final TransactionRepository repository;
+
+  BestSellerNotifier(this.repository) : super(BestSellerInitial());
+
+  Future<void> getBestSeller({String period = 'today'}) async {
+    state = BestSellerLoading();
+
+    try {
+      final products = await repository.getBestSeller(period: period);
+      state = BestSellerLoaded(products);
+    } catch (e) {
+      state = BestSellerError(e.toString());
     }
   }
 }
@@ -177,6 +245,7 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
     int? userId = 0,
     String? startDate = '',
     String? endDate = '',
+    String? query = '',
   }) async {
     state = TransactionQueryLoading(page);
 
@@ -186,7 +255,8 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
         limit: limit,
         startDate: startDate,
         endDate: endDate,
-        userId: userId
+        userId: userId,
+        query: query,
       );
       state = TransactionQueryLoaded(
         transactions: transactions.data,
@@ -200,6 +270,12 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
     }
   }
 }
+
+final transactionSearchProvider =
+    StateNotifierProvider<TransactionQueryNotifier, TransactionQueryState>(
+      (ref) =>
+          TransactionQueryNotifier(ref.read(transactionRepositoryProvider)),
+    );
 
 final stockQueryProvider =
     StateNotifierProvider<StockQueryNotifier, StockQueryState>(

@@ -203,6 +203,30 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
        state = ProductSubmitError(e.toString());
     }
   }
+}
 
+// PRODUCT SEARCH PROVIDER
+final productSearchProvider = StateNotifierProvider<ProductSearchNotifier, AsyncValue<List<ProductModel>>>(
+  (ref) => ProductSearchNotifier(ref.read(productRepositoryProvider)),
+);
+
+class ProductSearchNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
+  final ProductRepository repository;
   
+  ProductSearchNotifier(this.repository) : super(const AsyncValue.data([]));
+
+  Future<void> search(String query) async {
+    if (query.isEmpty) {
+      state = const AsyncValue.data([]);
+      return;
+    }
+
+    state = const AsyncValue.loading();
+    try {
+      final products = await repository.searchProducts(query);
+      state = AsyncValue.data(products);
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+    }
+  }
 }

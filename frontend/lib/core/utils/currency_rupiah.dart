@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 String formatRupiah(
   num value, {
@@ -25,5 +26,35 @@ String formatRupiahCompact(int amount) {
     return 'Rp. $formatted ribu';
   } else {
     return 'Rp. $amount';
+  }
+}
+
+double parseRupiah(String value) {
+  return double.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+}
+
+class RupiahInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    final double value = parseRupiah(newValue.text);
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: '',
+      decimalDigits: 0,
+    );
+
+    String newText = formatter.format(value).trim();
+
+    return newValue.copyWith(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
   }
 }

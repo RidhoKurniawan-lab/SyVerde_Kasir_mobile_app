@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/dashboard/admin.dart';
-import 'package:frontend/presentation/screens/home/admin.dart';
 import 'package:frontend/presentation/screens/product/admin/main.dart';
 import 'package:frontend/presentation/screens/report/report.dart';
 import 'package:frontend/presentation/widgets/navigation/admin_navbar.dart';

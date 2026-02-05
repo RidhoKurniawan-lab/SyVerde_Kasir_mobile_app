@@ -15,6 +15,7 @@ class TransactionController extends Controller
         $startDate = $request->query('start_date');
         $endDate   = $request->query('end_date');
         $userId    = $request->query('user_id');
+        $querySearch = $request->query('query');
 
         $transaction = Transaction::select([
             'transactions.id',
@@ -24,6 +25,11 @@ class TransactionController extends Controller
             'users.name as user_name'
         ])
             ->join('users', 'users.id', '=', 'transactions.user_id')
+
+            // filter by invoice number
+            ->when($querySearch, function ($query) use ($querySearch) {
+                $query->where('transactions.invoice_number', 'like', "%$querySearch%");
+            })
 
             // filter by user_id
             ->when(
@@ -55,50 +61,121 @@ class TransactionController extends Controller
         return response()->json($transaction);
     }
 
-    public function summeryToday()
+    public function summeryToday(Request $request)
+    {
+        $period = $request->query('period', 'today');
+        return response()->json($this->getSummaryData(null, $period));
+    }
+
+    public function summeryByCashier(Request $request)
+    {
+        $cashierId = $request->query('cashier_id');
+        $period    = $request->query('period', 'today');
+
+        if (!$cashierId) {
+            return response()->json([
+                'cash' => 0,
+                'cash_change_percent' => 0,
+                'non_cash' => 0,
+                'non_cash_change_percent' => 0,
+                'total_item' => 0,
+                'total_item_change_percent' => 0
+            ]);
+        }
+
+        return response()->json($this->getSummaryData($cashierId, $period));
+    }
+
+    private function getSummaryData($cashierId = null, $period = 'today')
     {
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
 
-        // Ambil total pembayaran hari ini per metode
-        $paymentTotalsToday = Transaction::selectRaw('payment_method, SUM(total) as total')
-            ->whereDate('created_at', $today)
+        $startDate = $today;
+        $endDate = $today;
+        $compareStartDate = $yesterday;
+        $compareEndDate = $yesterday;
+
+        if ($period === 'this_month') {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+            $compareStartDate = Carbon::now()->subMonth()->startOfMonth();
+            $compareEndDate = Carbon::now()->subMonth()->endOfMonth();
+        } elseif ($period === 'last_month') {
+            $startDate = Carbon::now()->subMonth()->startOfMonth();
+            $endDate = Carbon::now()->subMonth()->endOfMonth();
+            $compareStartDate = Carbon::now()->subMonths(2)->startOfMonth();
+            $compareEndDate = Carbon::now()->subMonths(2)->endOfMonth();
+        }
+
+        $queryCurrent = Transaction::whereBetween('created_at', [$startDate->format('Y-m-d') . ' 00:00:00', $endDate->format('Y-m-d') . ' 23:59:59']);
+        $queryCompare = Transaction::whereBetween('created_at', [$compareStartDate->format('Y-m-d') . ' 00:00:00', $compareEndDate->format('Y-m-d') . ' 23:59:59']);
+
+        if ($cashierId) {
+            $queryCurrent->where('user_id', $cashierId);
+            $queryCompare->where('user_id', $cashierId);
+        }
+
+        // Ambil total pembayaran periode ini per metode
+        $paymentTotalsCurrent = (clone $queryCurrent)->selectRaw('payment_method, SUM(total) as total')
             ->groupBy('payment_method')
             ->get();
 
-        $cashToday = $paymentTotalsToday->firstWhere('payment_method', 'cash')->total ?? 0;
-        $nonCashToday = $paymentTotalsToday->firstWhere('payment_method', 'qris')->total ?? 0;
+        $cashCurrent = $paymentTotalsCurrent->firstWhere('payment_method', 'cash')->total ?? 0;
+        $nonCashCurrent = $paymentTotalsCurrent->firstWhere('payment_method', 'qris')->total ?? 0;
 
-        // Ambil total pembayaran kemarin per metode
-        $paymentTotalsYesterday = Transaction::selectRaw('payment_method, SUM(total) as total')
-            ->whereDate('created_at', $yesterday)
+        // Ambil total pembayaran periode pembanding per metode
+        $paymentTotalsCompare = (clone $queryCompare)->selectRaw('payment_method, SUM(total) as total')
             ->groupBy('payment_method')
             ->get();
 
-        $cashYesterday = $paymentTotalsYesterday->firstWhere('payment_method', 'cash')->total ?? 0;
-        $nonCashYesterday = $paymentTotalsYesterday->firstWhere('payment_method', 'qris')->total ?? 0;
+        $cashCompare = $paymentTotalsCompare->firstWhere('payment_method', 'cash')->total ?? 0;
+        $nonCashCompare = $paymentTotalsCompare->firstWhere('payment_method', 'qris')->total ?? 0;
 
-        // Total item hari ini
-        $totalItemToday = TransactionItems::whereHas('transaction', function ($q) use ($today) {
-            $q->whereDate('created_at', $today);
+        // Total item periode ini
+        $totalItemCurrent = TransactionItems::whereHas('transaction', function ($q) use ($startDate, $endDate, $cashierId) {
+            $q->whereBetween('created_at', [$startDate->format('Y-m-d') . ' 00:00:00', $endDate->format('Y-m-d') . ' 23:59:59']);
+            if ($cashierId) $q->where('user_id', $cashierId);
         })->sum('qty');
 
-        $totalItemYesterday = TransactionItems::whereHas('transaction', function ($q) use ($yesterday) {
-            $q->whereDate('created_at', $yesterday);
+        $totalItemCompare = TransactionItems::whereHas('transaction', function ($q) use ($compareStartDate, $compareEndDate, $cashierId) {
+            $q->whereBetween('created_at', [$compareStartDate->format('Y-m-d') . ' 00:00:00', $compareEndDate->format('Y-m-d') . ' 23:59:59']);
+            if ($cashierId) $q->where('user_id', $cashierId);
         })->sum('qty');
 
         // Hitung persentase perubahan
-        $itemPercentageChange = $totalItemYesterday == 0
-            ? ($totalItemToday > 0 ? 100 : 0)
-            : (($totalItemToday - $totalItemYesterday) / $totalItemYesterday) * 100;
+        $itemPercentageChange = $totalItemCompare == 0
+            ? ($totalItemCurrent > 0 ? 100 : 0)
+            : (($totalItemCurrent - $totalItemCompare) / $totalItemCompare) * 100;
+
+        return [
+            'cash' => (float)$cashCurrent,
+            'cash_change_percent' => $cashCompare == 0 ? ($cashCurrent > 0 ? 100 : 0) : (($cashCurrent - $cashCompare) / $cashCompare) * 100,
+            'non_cash' => (float)$nonCashCurrent,
+            'non_cash_change_percent' => $nonCashCompare == 0 ? ($nonCashCurrent > 0 ? 100 : 0) : (($nonCashCurrent - $nonCashCompare) / $nonCashCompare) * 100,
+            'total_item' => (int)$totalItemCurrent,
+            'total_item_change_percent' => (float)$itemPercentageChange
+        ];
+    }
+
+    public function monthlySummary()
+    {
+        $start = Carbon::now()->subMonths(11)->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+
+        $data = Transaction::selectRaw("
+                DATE_FORMAT(created_at, '%Y-%m') as month,
+                SUM(CASE WHEN payment_method = 'cash' THEN total ELSE 0 END) as cash,
+                SUM(CASE WHEN payment_method = 'qris' THEN total ELSE 0 END) as non_cash,
+                SUM(total) as total_transaction
+            ")
+            ->whereBetween('created_at', [$start, $end])
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
 
         return response()->json([
-            'cash' => $cashToday,
-            'cash_change_percent' => $cashYesterday == 0 ? ($cashToday > 0 ? 100 : 0) : (($cashToday - $cashYesterday) / $cashYesterday) * 100,
-            'non_cash' => $nonCashToday,
-            'non_cash_change_percent' => $nonCashYesterday == 0 ? ($nonCashToday > 0 ? 100 : 0) : (($nonCashToday - $nonCashYesterday) / $nonCashYesterday) * 100,
-            'total_item' => $totalItemToday,
-            'total_item_change_percent' => $itemPercentageChange
+            'data' => $data
         ]);
     }
 }

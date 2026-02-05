@@ -98,4 +98,14 @@ class ProductRepository {
       rethrow;
     }
   }
+
+  Future<List<ProductModel>> searchProducts(String query) async {
+    try {
+      final response = await api.searchProducts(query);
+      final data = response['data'] as List;
+      return data.map((json) => ProductModel.fromJson(json)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

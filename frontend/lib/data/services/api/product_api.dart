@@ -189,4 +189,18 @@ class ProductApi {
     return jsonDecode(response.body);
   }
 
+  Future<Map<String, dynamic>> searchProducts(String query) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('token expired');
+
+    final response = await http.get(
+      Uri.parse(AppEndpoint.productSearch(query)),
+      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode != 200) throw Exception('failed to load data');
+
+    final data = jsonDecode(response.body);
+    return data;
+  }
 }

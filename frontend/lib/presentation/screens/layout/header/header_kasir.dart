@@ -13,6 +13,7 @@ class HeaderKasir extends ConsumerWidget implements PreferredSizeWidget {
   final bool? back;
   final bool? filter;
   final bool? search;
+  final ValueChanged<String>? onSearchChanged;
 
   const HeaderKasir({
     super.key,
@@ -23,6 +24,7 @@ class HeaderKasir extends ConsumerWidget implements PreferredSizeWidget {
     this.filter,
     this.isHeaderShow,
     this.search,
+    this.onSearchChanged,
   });
 
   @override
@@ -47,7 +49,7 @@ class HeaderKasir extends ConsumerWidget implements PreferredSizeWidget {
                 child: SizedBox(
                   height: 50,
                   child: SearchTextField(
-                    onChanged: (value) {},
+                    onChanged: onSearchChanged,
                   )
                 ),
               ),

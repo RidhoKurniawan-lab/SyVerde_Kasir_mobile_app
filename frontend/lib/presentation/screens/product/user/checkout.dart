@@ -7,6 +7,8 @@ import 'package:frontend/presentation/widgets/kasir/list_checkout.dart';
 import 'package:frontend/data/models/response/cart_model.dart';
 import 'package:frontend/state/cart_provider.dart';
 import 'package:frontend/state/product_provider.dart';
+import 'package:frontend/core/utils/currency_rupiah.dart';
+import 'package:frontend/state/transaction_provider.dart';
 
 class Checkout extends ConsumerStatefulWidget {
   const Checkout({super.key});
@@ -68,18 +70,46 @@ class _CheckoutState extends ConsumerState<Checkout> {
           onPressed: state is ProductSubmitLoading
               ? null
               : () async {
-                  if (cart.paidAmount == 0) {
+                  final cartForm = ref.read(cartFormProvider);
+                  final cartNotifier = ref.read(cartProvider.notifier);
+                  final total = cartNotifier.total;
+                  final paymentMethod = cartForm.paymentMethod.isEmpty ? 'cash' : cartForm.paymentMethod;
+                  
+                  if (paymentMethod == 'cash' && cartForm.paidAmount < total) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Paid amount cant be empty')),
+                      SnackBar(content: Text('Paid amount must be at least ${formatRupiah(total)}')),
                     );
+                    return;
                   }
-                  final payload = ref
-                      .read(cartProvider.notifier)
-                      .buildPayload('cash', cart.paidAmount, 0);
 
-                  ref
-                      .read(productSubmitProvider.notifier)
-                      .insertTransaction(payload);
+                  final payload = cartNotifier.buildPayload(
+                    paymentMethod,
+                    paymentMethod == 'cash' ? cartForm.paidAmount : total,
+                    0,
+                  );
+
+                  await ref.read(productSubmitProvider.notifier).insertTransaction(payload);
+                  
+                  if (mounted && ref.read(productSubmitProvider) is ProductSubmitSuccess) {
+                    bool? confirm;
+                    if (paymentMethod == 'cash') {
+                       confirm = await showSuccessConfirmationDialog(
+                        context, 
+                        change: formatRupiah(cartForm.paidAmount - total)
+                      );
+                    } else {
+                      confirm = await showSimpleSuccessDialog(context);
+                    }
+
+                    if (confirm == true && mounted) {
+                      ref.read(productQueryProvider.notifier).getProduct();
+                      ref.read(transactionProvider.notifier).getTransactionSummary();
+                      ref.read(cartProvider.notifier).clear();
+                      ref.read(cartFormProvider.notifier).setPaidAmount(0);
+                      ref.read(cartFormProvider.notifier).setPaymentMethod('cash');
+                      Navigator.pop(context);
+                    }
+                  }
                 },
         ),
       ),
