@@ -49,4 +49,8 @@ class Product extends Model
     public function transactionItems(){
         return $this->hasMany(TransactionItems::class);
     }
+
+    public function entries(){
+        return $this->morphMany(ActivityLogs::class, 'entryable');
+    }
 }

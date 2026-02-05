@@ -20,8 +20,13 @@ class AuthRepository {
   }
 
   // Logout
-  Future<void> logout() async {
-    await SecureStorage.deleteToken();
+  Future<bool> logout() async {
+    try {
+      await SecureStorage.deleteToken();
+      return true; // berhasil
+    } catch (e) {
+      return false; 
+    }
   }
 
   // Check if token exists

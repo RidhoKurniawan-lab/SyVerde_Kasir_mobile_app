@@ -203,17 +203,24 @@ class ProductSeeders extends Seeder
                 ],
             ];
 
-            foreach($products as $product){
-                Product::create([
-                    'name' => $product['name'],
-                    'sku' => $product['sku'],
-                    'category_id' => $product['category_id'],
-                    'unit_id' => $product['unit_id'],
-                    'price' => $product['price'],
-                    'image' => $product['image'],
-                    'description' => $product['description'],
+            foreach($products as $productData){
+                $product = Product::create([
+                    'name' => $productData['name'],
+                    'sku' => $productData['sku'],
+                    'category_id' => $productData['category_id'],
+                    'unit_id' => $productData['unit_id'],
+                    'price' => $productData['price'],
+                    'image' => $productData['image'],
+                    'description' => $productData['description'],
                     'stock' => rand(200,350)
                 ]);
+
+                $product->entries()->create([
+                    'user_id' => 1,
+                    'description' => 'Add new product',
+                    'action' => 'create',
+                ]);
+
             }
     }
 }

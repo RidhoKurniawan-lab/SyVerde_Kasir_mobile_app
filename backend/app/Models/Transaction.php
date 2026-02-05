@@ -27,4 +27,8 @@ class Transaction extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function entries(){
+        return $this->morphMany(ActivityLogs::class, 'entryable');
+    }
 }

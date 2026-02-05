@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data/models/response/user_model.dart';
 import 'package:frontend/data/repositories/auth_repository.dart';
 import 'package:frontend/data/services/api/auth_api.dart';
+import 'package:flutter/foundation.dart';
 
 // DEPENDENCY 
 
@@ -21,6 +22,12 @@ abstract class AuthState {}
 class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
+
+class AuthCheckSuccess extends AuthState {}
+
+class AuthLogoutFailed extends AuthState {}
+
+class AuthLogoutSuccess extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final UserModel user;
@@ -57,6 +64,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     } catch (e) {
       // Jika gagal
+      state = AuthError(e.toString().replaceAll('Exception:', '').trim());
+    }
+  }
+
+  Future<void> logout() async {
+
+    state = AuthLoading();
+    
+    try {
+
+      final response = await repository.logout();
+      if (response) {
+      state = AuthLogoutSuccess();
+      }
+      state = AuthLogoutFailed();
+
+    } catch (e) {
       state = AuthError(e.toString().replaceAll('Exception:', '').trim());
     }
   }

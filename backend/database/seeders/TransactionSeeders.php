@@ -35,11 +35,12 @@ class TransactionSeeders extends Seeder
 
                 $invoiceService = app(InvoiceGeneratorService::class);
                 $paymentMethod = collect(['cash', 'qris'])->random();
-                $createAt = $date->copy()->addMinutes(rand(0,1440));
+                $createAt = $date->copy()->addMinutes(rand(0, 1440));
+                $userId = rand(2, 3);
 
                 $transaction = Transaction::create([
                     'invoice_number' => $invoiceService->generateInvoice($createAt),
-                    'user_id' => rand(2, 3),
+                    'user_id' => $userId,
                     'total' => 0,
                     'discount_total' => 0,
                     'grand_total' => 0,
@@ -77,6 +78,13 @@ class TransactionSeeders extends Seeder
                     'grand_total' => $total,
                     'paid_amount' => $paid,
                     'change_amount' => $paid - $total
+                ]);
+
+                $transaction->entries()->create([
+                    'user_id' => $userId,
+                    'description' => 'Add new Transaction',
+                    'action' => 'create',
+                    'created_at' => $date->copy()->addMinutes(rand(0, 1440))
                 ]);
             }
         }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/home/admin.dart';
 import 'package:frontend/presentation/screens/product/admin/main.dart';
+import 'package:frontend/presentation/screens/report/report.dart';
 import 'package:frontend/presentation/widgets/navigation/admin_navbar.dart';
 
 class AdminLayout extends StatefulWidget {
@@ -15,7 +16,7 @@ class _AdminLayoutState extends State<AdminLayout> {
 
   final List<Widget> _pages = [
     AdminHome(),
-    Center(child: Text('Admin Report Page')),
+    Report(),
     AdminProduct(),
     Center(child: Text('Admin Transaction Page')),
     Center(child: Text('Admin More Page')),

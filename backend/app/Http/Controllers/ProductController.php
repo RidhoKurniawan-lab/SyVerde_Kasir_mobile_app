@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\TransactionService;
 use App\Services\InvoiceGeneratorService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -63,6 +64,14 @@ class ProductController extends Controller
 
         $products = Product::create($validated);
 
+        $userId = Auth::id();
+
+        $products->entries()->create([
+            'user_id' => $userId,
+            'description' => 'Add new Product',
+            'action' => 'create'
+        ]);
+
         $products->refresh()->load(['category', 'unit']);
 
         return response()->json($products, 201);
@@ -92,6 +101,14 @@ class ProductController extends Controller
 
         $product->update($validated);
 
+        $userId = Auth::id();
+
+        $product->entries()->create([
+            'user_id' => $userId,
+            'description' => 'Update Product',
+            'action' => 'update'
+        ]);
+
         $product->refresh()->load(['category', 'unit']);
 
         return response()->json($product);
@@ -108,12 +125,19 @@ class ProductController extends Controller
             ], 404);
         }
 
+        $product->entries()->create([
+            'user_id' => $id,
+            'description' => 'Deleted Product' . $product->name,
+            'action' => 'delete'
+        ]);
+
         $product->delete();
 
         return response()->json(['deleted' => true]);
     }
 
-    public function updateBulkStock(Request $request){
+    public function updateBulkStock(Request $request)
+    {
 
         $request->validate([
             'items' => 'required|array',
@@ -122,16 +146,17 @@ class ProductController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            foreach($request->items as $item){
+            foreach ($request->items as $item) {
                 Product::where('id', $item['id'])
-                ->increment('stock', $item['stock']);
+                    ->increment('stock', $item['stock']);
             }
         });
 
         return response()->json(['updated' => true]);
     }
 
-    public function store(Request $request, InvoiceGeneratorService $invoiceService){
+    public function store(Request $request, InvoiceGeneratorService $invoiceService)
+    {
 
         $request->validate([
             'payment_method' => 'required|string',
@@ -148,15 +173,42 @@ class ProductController extends Controller
             'items.*.subtotal' => 'required|numeric',
         ]);
 
+
         $transaction = $this->transactionService->createTransaction(
             $request,
             $invoiceService
         );
+
+        $userId = Auth::id();
+
+        $transaction->entries()->create([
+            'user_id' => $userId,
+            'description' => 'Add new Transaction',
+            'action' => 'create'
+        ]);
+
 
         return response()->json([
             'status' => true,
             'message' => 'Transaksi berhasil',
             'data' => $transaction,
         ]);
+    }
+
+    public function getAllPaginate(Request $request)
+    {
+        $limit = $request->query('limit', 10);
+
+        $products = Product::select([
+            'products.name',
+            'products.stock',
+            'products.price',
+            'units.name as unit_name'
+        ])
+            ->join('units', 'units.id', '=', 'products.unit_id')
+            ->latest('products.created_at')
+            ->simplePaginate($limit);
+
+        return response()->json($products);
     }
 }

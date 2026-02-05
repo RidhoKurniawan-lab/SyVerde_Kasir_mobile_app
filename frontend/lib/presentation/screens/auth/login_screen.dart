@@ -2,10 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:frontend/presentation/widgets/auth/login_form.dart';
 import 'package:frontend/core/constants/app_color.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  final String? message;
 
-  
+  const LoginScreen({
+    super.key,
+    this.message
+    });
+  @override
+State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+@override
+  void initState() {
+    super.initState();
+
+    // Pastikan widget sudah build sebelum menampilkan toast
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.message != null && widget.message!.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(widget.message!),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

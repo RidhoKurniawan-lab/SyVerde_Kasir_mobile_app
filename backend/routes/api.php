@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/product/{product}/update', [ProductController::class, 'update']);
 
+    Route::get('/product/get/paginate', [ProductController::class, 'getAllPaginate']);
+
     // Category CRUD
     Route::get('/category/get', [CategoryController::class, 'getAll']);
 
@@ -45,6 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction/get', [TransactionController::class, 'getAll']);
 
     Route::get('/transaction/{transaction}/get', [TransactionController::class, 'getById']);
+
+    Route::get('/transaction/get/summery', [TransactionController::class, 'summeryToday']);
+
 
 });
 

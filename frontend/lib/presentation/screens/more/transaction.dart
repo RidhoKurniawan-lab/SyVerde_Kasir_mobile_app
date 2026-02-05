@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/utils/date_time.dart';
-import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/screens/layout/header/header_kasir.dart';
 import 'package:frontend/presentation/widgets/common/card_transaction.dart';
@@ -20,6 +19,7 @@ class _Transaction extends ConsumerState<Transaction> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(transactionQueryProvider);
+      
       if (state is! TransactionQueryLoaded) {
         ref.read(transactionQueryProvider.notifier).getTransaction();
       }
@@ -45,7 +45,8 @@ class _Transaction extends ConsumerState<Transaction> {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: [ 
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

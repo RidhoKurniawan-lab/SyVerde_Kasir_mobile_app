@@ -14,8 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/configs/routes.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
+      WidgetsFlutterBinding.ensureInitialized();
+    await initializeDateFormatting('en_US', null);
   runApp(const ProviderScope(
       child: MainApp(),
     ),);

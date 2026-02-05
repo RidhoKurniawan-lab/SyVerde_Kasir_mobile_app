@@ -1,5 +1,6 @@
 // import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/data/models/response/summery_model.dart';
 import 'package:frontend/data/models/response/transaction_model.dart';
 import 'package:frontend/data/services/api/transaction_api.dart';
 import 'package:frontend/data/repositories/transaction_repository.dart';
@@ -28,6 +29,11 @@ class TransactionLoaded extends TransactionState {
   TransactionLoaded(this.transaction);
 }
 
+class TransactionLoadedSummery extends TransactionState {
+  final TransactionSummary summery;
+  TransactionLoadedSummery(this.summery);
+}
+
 class TransactionError extends TransactionState {
   final String message;
   TransactionError(this.message);
@@ -49,10 +55,10 @@ class TransactionQueryLoaded extends TransactionQueryState {
   final int? currentPage;
   final bool isLastPage;
   TransactionQueryLoaded({
-   required this.transactions,
-   required this.currentPage,
-   required this.isLastPage
-   }); 
+    required this.transactions,
+    required this.currentPage,
+    required this.isLastPage,
+  });
 }
 
 // PROVIDER GET
@@ -79,6 +85,21 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
       );
     }
   }
+
+  Future<void> getTransactionSummary() async {
+    state = TransactionLoading();
+
+    try {
+      final summery = await repository.getTransactionSummery();
+      debugPrint('Data $summery');
+      state = TransactionLoadedSummery(summery);
+    } catch (e, stack) {
+      debugPrint('ERROR getTransactionSummary: $e');
+      debugPrintStack(stackTrace: stack);
+
+      state = TransactionError(e.toString());
+    }
+  }
 }
 
 class TransactionQueryError extends TransactionQueryState {
@@ -98,15 +119,15 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
 
   TransactionQueryNotifier(this.repository) : super(TransactionQueryInitial());
 
-  Future<void> getTransaction({int page = 1}) async {
+  Future<void> getTransaction({int page = 1, int limit = 20}) async {
     state = TransactionQueryLoading(page);
 
     try {
-      final transactions = await repository.getTransaction(page: page);
+      final transactions = await repository.getTransaction(page: page, limit: limit);
       state = TransactionQueryLoaded(
         transactions: transactions.data,
         currentPage: page,
-        isLastPage: transactions.nextPageUrl == null
+        isLastPage: transactions.nextPageUrl == null,
       );
     } catch (e) {
       state = TransactionQueryError(
