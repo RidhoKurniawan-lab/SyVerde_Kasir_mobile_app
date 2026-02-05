@@ -9,7 +9,9 @@ import 'package:frontend/presentation/screens/product/admin/receipt.dart';
 import 'package:frontend/presentation/screens/product/user/checkout.dart';
 import 'package:frontend/presentation/screens/more/transaction.dart';
 import 'package:frontend/presentation/screens/more/detail_transaction.dart';
+import 'package:frontend/presentation/screens/report/audit.dart';
 import 'package:frontend/presentation/screens/report/transaction.dart';
+import 'package:frontend/presentation/screens/report/stock.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -24,6 +26,8 @@ class AppRoutes {
   static const String transaction = '/transaction';
   static const String detailTransaction = '/transaction/';
   static const String reportSeles = '/reportSeles';
+  static const String reportStock = '/reportStock';
+  static const String reportAudit = '/reportAudit';
 
   static Map<String, WidgetBuilder> getAllRoutes() {
     return {
@@ -36,6 +40,8 @@ class AppRoutes {
       receipt: (context) => Receipt(),
       transaction: (context) => Transaction(),
       reportSeles: (context) => TransactionTable(),
+      reportStock: (context) => StockTable(),
+      reportAudit: (context) => AuditTable(),
     };
   }
 

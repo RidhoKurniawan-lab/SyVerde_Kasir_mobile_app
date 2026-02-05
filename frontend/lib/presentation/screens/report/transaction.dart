@@ -5,7 +5,10 @@ import 'package:frontend/presentation/screens/report/table.dart';
 import 'package:frontend/core/constants/app_color.dart';
 import 'package:frontend/presentation/screens/layout/header/header_admin_product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/presentation/widgets/common/card_filter.dart';
 import 'package:frontend/presentation/widgets/common/card_report.dart';
+import 'package:frontend/state/auth_provider.dart';
+import 'package:frontend/state/category_provider.dart';
 import 'package:frontend/state/transaction_provider.dart';
 
 class TransactionTable extends ConsumerStatefulWidget {
@@ -32,6 +35,11 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
       if (stateSum is! TransactionLoadedSummery) {
         ref.read(transactionProvider.notifier).getTransactionSummary();
       }
+
+      final stateUser = ref.read(userQueryProvider);
+      if (stateUser is! UserQueryLoaded) {
+        ref.read(userQueryProvider.notifier).getUser();
+      }
     });
   }
 
@@ -42,193 +50,136 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
   Widget build(BuildContext context) {
     final state = ref.watch(transactionQueryProvider);
     final stateSum = ref.watch(transactionProvider);
+    final stateUser = ref.watch(userQueryProvider);
     return Scaffold(
       backgroundColor: AppColor.primarywhite,
       appBar: const HeaderAdminProduct(
         isIcon: false,
         category: false,
-        header: 'Table',
+        header: 'Report Seles',
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Container(
-                      width: 400,
-                      padding: EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        color: AppColor.secondarywhite,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColor.black10,
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Text(
-                              'Sales Summary',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ReportCard(
-                                iconBgColor: AppColor.yellow28,
-                                iconColor: AppColor.yellow100,
-                                icon: Icons.request_quote_outlined,
-                                headerText: 'Cash',
-                                mainText: stateSum is TransactionLoadedSummery ? formatRupiah(stateSum.summery.cash) : '0',
-                                bottomText: stateSum is TransactionLoadedSummery ? stateSum.summery.cashPercent!.toDouble() : 0,
-                              ),
-                              const SizedBox(width: 6),
-                              ReportCard(
-                                iconBgColor: AppColor.blue28,
-                                iconColor: AppColor.blue100,
-                                icon: Icons.trending_up,
-                                headerText: 'Sales',
-                                mainText: stateSum is TransactionLoadedSummery ? formatRupiah(stateSum.summery.cash + stateSum.summery.nonCash) : '0',
-                                bottomText: stateSum is TransactionLoadedSummery ? (stateSum.summery.nonCashPercent!.toDouble() + stateSum.summery.cashPercent!.toDouble()) / 2 : 0,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ReportCard(
-                                iconBgColor: AppColor.yellow28,
-                                iconColor: AppColor.yellow100,
-                                icon: Icons.request_quote_outlined,
-                                headerText: 'Order',
-                                mainText: stateSum is TransactionLoadedSummery ? stateSum.summery.totalItem.toString() : '0',
-                                bottomText: stateSum is TransactionLoadedSummery ? stateSum.summery.totalItemPercent!.toDouble() : 0,
-                              ),
-                              const SizedBox(width: 6),
-                              ReportCard(
-                                iconBgColor: AppColor.blue28,
-                                iconColor: AppColor.blue100,
-                                icon: Icons.trending_up,
-                                headerText: 'E-Money',
-                                mainText: stateSum is TransactionLoadedSummery ? formatRupiah(stateSum.summery.nonCash) : '0',
-                                bottomText: stateSum is TransactionLoadedSummery ? stateSum.summery.nonCashPercent!.toDouble() : 0,
-                              ),
-                            ],
-                          ),
-                        ],
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: FilterCard(
+                        cashiers: stateUser is UserQueryLoaded
+                            ? stateUser.users
+                            : [],
+                        onApplyFilter: (startDate, endDate, cashierName) {
+                          ref.read(transactionQueryProvider.notifier).getTransaction(
+                            startDate: startDate,
+                            endDate: endDate,
+                            userId: cashierName
+                          );
+                        },
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                  // Table Container
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 1000),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // ===== JUDUL (DI DALAM CONTAINER) =====
-                          Container(
-                            height: 48,
-                            decoration: const BoxDecoration(
-                              color: AppColor.primary,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(18),
-                                topRight: Radius.circular(18),
+                    // Table Container
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 1000),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // ===== JUDUL (DI DALAM CONTAINER) =====
+                            Container(
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColor.primary,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(18),
+                                  topRight: Radius.circular(18),
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: const Text(
+                                'Transaction',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            alignment: Alignment.centerLeft,
-                            child: const Text(
-                              'Transaction',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+
+                            // ===== TABLE HEADER =====
+                            Container(
+                              height: 32,
+                              color: Colors.grey[200],
+                              child: Row(
+                                children: [
+                                  _buildHeaderCell('Date Time', flex: 1),
+                                  _buildHeaderCell('Cashier'),
+                                  _buildHeaderCell('Total'),
+                                  _buildHeaderCell('Status'),
+                                ],
                               ),
                             ),
-                          ),
 
-                          // ===== TABLE HEADER =====
-                          Container(
-                            height: 32,
-                            color: Colors.grey[200],
-                            child: Row(
-                              children: [
-                                _buildHeaderCell('Date Time', flex: 1),
-                                _buildHeaderCell('Cashier'),
-                                _buildHeaderCell('Total'),
-                                _buildHeaderCell('Status'),
-                              ],
-                            ),
-                          ),
-
-                          // ===== TABLE BODY =====
-                          Container(
-                            constraints: BoxConstraints(
-                              minHeight: 50,
-                              maxHeight: 330, // 50% dari tinggi layar
-                            ),
-                            child: state is TransactionQueryLoading
-                                ? const Center(child: CircularProgressIndicator())
-                                : state is TransactionQueryLoaded
-                                    ? _buildTransactionBody(state)
-                                    : state is TransactionQueryError
-                                        ? Center(child: Text(state.message))
-                                        : const SizedBox(),
-                          ),
-
-                          // ===== FOOTER =====
-                          Container(
-                            height: 48,
-                            decoration: const BoxDecoration(
-                              color: AppColor.primary,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(18),
-                                bottomRight: Radius.circular(18),
+                            // ===== TABLE BODY =====
+                            Container(
+                              constraints: BoxConstraints(
+                                minHeight: 50,
+                                maxHeight: 330, // 50% dari tinggi layar
                               ),
+                              child: state is TransactionQueryLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : state is TransactionQueryLoaded
+                                  ? _buildTransactionBody(state)
+                                  : state is TransactionQueryError
+                                  ? Center(child: Text(state.message))
+                                  : const SizedBox(),
                             ),
-                            child: _buildPaginationFooter(),
-                          ),
-                        ],
+
+                            // ===== FOOTER =====
+                            Container(
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColor.primary,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(18),
+                                  bottomRight: Radius.circular(18),
+                                ),
+                              ),
+                              child: _buildPaginationFooter(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  
-                  // Spacer untuk memastikan konten terlihat hingga bawah
-                  const SizedBox(height: 20),
-                ],
+
+                    // Spacer untuk memastikan konten terlihat hingga bawah
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -252,14 +203,9 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
                         ),
                         'type': 'text',
                       },
-                      'row2': {
-                        'text': transaction.userName,
-                        'type': 'text',
-                      },
+                      'row2': {'text': transaction.userName, 'type': 'text'},
                       'row3': {
-                        'text': formatRupiah(
-                          transaction.total as num,
-                        ),
+                        'text': formatRupiah(transaction.total as num),
                         'type': 'text',
                       },
                       'row4': {
@@ -267,19 +213,11 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
                         'type': 'status',
                         'format': 'icon',
                       },
-                      'flex': {
-                        'col1': 1,
-                        'col2': 1,
-                        'col3': 1,
-                        'col4': 1,
-                      },
+                      'flex': {'col1': 1, 'col2': 1, 'col3': 1, 'col4': 1},
                     },
                   ),
                   if (index != state.transactions.length - 1)
-                    const Divider(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
+                    const Divider(height: 1, color: Colors.grey),
                 ],
               );
             },
@@ -287,10 +225,7 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
         ),
         // Expanded akan memastikan tidak ada space kosong di bawah list
         // jika data kurang dari maksimal tinggi
-        if (state.transactions.length < 10)
-          Expanded(
-            child: Container(),
-          ),
+        if (state.transactions.length < 10) Expanded(child: Container()),
       ],
     );
   }
@@ -337,8 +272,8 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
             state is TransactionQueryLoading
                 ? state.currentPage.toString()
                 : state is TransactionQueryLoaded
-                    ? state.currentPage.toString()
-                    : '0',
+                ? state.currentPage.toString()
+                : '0',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),

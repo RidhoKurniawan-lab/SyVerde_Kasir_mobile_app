@@ -13,6 +13,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::get('/user/get', [AuthController::class, 'getAll']);
+
+
     Route::get('/product/get', [ProductController::class, 'getAll']);
 
     Route::get('/unit/get', [UnitController::class, 'getAll']);
@@ -26,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/product/{product}/update', [ProductController::class, 'update']);
 
     Route::get('/product/get/paginate', [ProductController::class, 'getAllPaginate']);
+
+    Route::get('/audit/get/paginate', [ProductController::class, 'getAllLog']);
 
     // Category CRUD
     Route::get('/category/get', [CategoryController::class, 'getAll']);

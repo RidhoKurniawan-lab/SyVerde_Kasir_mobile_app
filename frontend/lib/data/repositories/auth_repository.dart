@@ -25,7 +25,7 @@ class AuthRepository {
       await SecureStorage.deleteToken();
       return true; // berhasil
     } catch (e) {
-      return false; 
+      return false;
     }
   }
 
@@ -33,5 +33,17 @@ class AuthRepository {
   Future<bool> hasToken() async {
     final token = await SecureStorage.getToken();
     return token != null;
+  }
+
+  Future<List<UserModel>> getUser() async {
+    try {
+      final response = await api.getUser();
+
+      return response
+          .map<UserModel>((json) => UserModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

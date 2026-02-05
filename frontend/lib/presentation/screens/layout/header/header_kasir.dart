@@ -93,7 +93,7 @@ class HeaderKasir extends ConsumerWidget implements PreferredSizeWidget {
                   ),
                 if (name ?? false)
                   Text(
-                    '${user.name} - ${user.role.name}',
+                    '${user.name} - ${user.role!.name}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColor.primary,
                       fontWeight: FontWeight.w100,

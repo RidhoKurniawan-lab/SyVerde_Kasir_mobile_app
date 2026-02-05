@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLogs;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -210,5 +211,23 @@ class ProductController extends Controller
             ->simplePaginate($limit);
 
         return response()->json($products);
+    }
+
+    public function getAllLog(Request $request){
+
+        $limit = $request->query('limit', 10);
+
+        $activity = ActivityLogs::select([
+            'activity_logs.id',
+            'activity_logs.action',
+            'activity_logs.created_at',
+            'activity_logs.entryable_type',
+            'users.name as user_name'
+        ])
+            ->join('users', 'users.id', '=', 'activity_logs.user_id')
+            ->latest('activity_logs.created_at')
+            ->simplePaginate($limit);
+
+        return response()->json($activity);
     }
 }

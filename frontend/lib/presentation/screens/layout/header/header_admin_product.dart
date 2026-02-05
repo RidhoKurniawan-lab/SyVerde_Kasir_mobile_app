@@ -75,7 +75,7 @@ class HeaderAdminProduct extends ConsumerWidget implements PreferredSizeWidget {
               ),
 
               Text(
-                '${user.name} - ${user.role.name}',
+                '${user.name} - ${user.role!.name}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColor.primary,
                   fontWeight: FontWeight.w100,

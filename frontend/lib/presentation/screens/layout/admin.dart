@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/presentation/screens/dashboard/admin.dart';
 import 'package:frontend/presentation/screens/home/admin.dart';
 import 'package:frontend/presentation/screens/product/admin/main.dart';
 import 'package:frontend/presentation/screens/report/report.dart';
@@ -15,7 +16,7 @@ class _AdminLayoutState extends State<AdminLayout> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    AdminHome(),
+    AdminDashboard(),
     Report(),
     AdminProduct(),
     Center(child: Text('Admin Transaction Page')),

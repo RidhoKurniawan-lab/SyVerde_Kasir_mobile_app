@@ -1,6 +1,8 @@
 // import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/data/models/response/audit_model.dart';
 import 'package:frontend/data/models/response/summery_model.dart';
+import 'package:frontend/data/models/response/product_model.dart';
 import 'package:frontend/data/models/response/transaction_model.dart';
 import 'package:frontend/data/services/api/transaction_api.dart';
 import 'package:frontend/data/repositories/transaction_repository.dart';
@@ -50,6 +52,15 @@ class TransactionQueryLoading extends TransactionQueryState {
   TransactionQueryLoading(this.currentPage);
 }
 
+abstract class StockQueryState {}
+
+class StockQueryInitial extends StockQueryState {}
+
+class StockQueryLoading extends StockQueryState {
+  final int? currentPage;
+  StockQueryLoading(this.currentPage);
+}
+
 class TransactionQueryLoaded extends TransactionQueryState {
   final List<TransactionModel> transactions;
   final int? currentPage;
@@ -59,6 +70,42 @@ class TransactionQueryLoaded extends TransactionQueryState {
     required this.currentPage,
     required this.isLastPage,
   });
+}
+
+class StockQueryLoaded extends StockQueryState {
+  final List<ProductModel> stocks;
+  final int? currentPage;
+  final bool isLastPage;
+  StockQueryLoaded({
+    required this.stocks,
+    required this.currentPage,
+    required this.isLastPage,
+  });
+}
+
+abstract class AuditQueryState {}
+
+class AuditQueryInitial extends AuditQueryState {}
+
+class AuditQueryLoading extends AuditQueryState {
+  final int? currentPage;
+  AuditQueryLoading(this.currentPage);
+}
+
+class AuditQueryLoaded extends AuditQueryState {
+  final List<AuditModel> audits;
+  final int? currentPage;
+  final bool isLastPage;
+  AuditQueryLoaded({
+    required this.audits,
+    required this.currentPage,
+    required this.isLastPage,
+  });
+}
+
+class AuditQueryError extends AuditQueryState {
+  final String message;
+  AuditQueryError(this.message);
 }
 
 // PROVIDER GET
@@ -107,6 +154,11 @@ class TransactionQueryError extends TransactionQueryState {
   TransactionQueryError(this.message);
 } // PROVIDER GETS
 
+class StockQueryError extends StockQueryState {
+  final String message;
+  StockQueryError(this.message);
+} // PROVIDER GETS
+
 final transactionQueryProvider =
     StateNotifierProvider<TransactionQueryNotifier, TransactionQueryState>(
       (ref) =>
@@ -119,11 +171,23 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
 
   TransactionQueryNotifier(this.repository) : super(TransactionQueryInitial());
 
-  Future<void> getTransaction({int page = 1, int limit = 20}) async {
+  Future<void> getTransaction({
+    int page = 1,
+    int limit = 20,
+    int? userId = 0,
+    String? startDate = '',
+    String? endDate = '',
+  }) async {
     state = TransactionQueryLoading(page);
 
     try {
-      final transactions = await repository.getTransaction(page: page, limit: limit);
+      final transactions = await repository.getTransaction(
+        page: page,
+        limit: limit,
+        startDate: startDate,
+        endDate: endDate,
+        userId: userId
+      );
       state = TransactionQueryLoaded(
         transactions: transactions.data,
         currentPage: page,
@@ -133,6 +197,60 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
       state = TransactionQueryError(
         e.toString().replaceAll('Exception:', '').trim(),
       );
+    }
+  }
+}
+
+final stockQueryProvider =
+    StateNotifierProvider<StockQueryNotifier, StockQueryState>(
+      (ref) => StockQueryNotifier(ref.read(transactionRepositoryProvider)),
+    );
+
+// NOTIFIER GETS
+class StockQueryNotifier extends StateNotifier<StockQueryState> {
+  final TransactionRepository repository;
+
+  StockQueryNotifier(this.repository) : super(StockQueryInitial());
+
+  Future<void> getStock({int page = 1, int limit = 20}) async {
+    state = StockQueryLoading(page);
+
+    try {
+      final stock = await repository.getStock(page: page, limit: limit);
+      state = StockQueryLoaded(
+        stocks: stock.data,
+        currentPage: page,
+        isLastPage: stock.nextPageUrl == null,
+      );
+    } catch (e) {
+      state = StockQueryError(e.toString().replaceAll('Exception:', '').trim());
+    }
+  }
+}
+
+final auditQueryProvider =
+    StateNotifierProvider<AuditQueryNotifier, AuditQueryState>(
+      (ref) => AuditQueryNotifier(ref.read(transactionRepositoryProvider)),
+    );
+
+// NOTIFIER GETS
+class AuditQueryNotifier extends StateNotifier<AuditQueryState> {
+  final TransactionRepository repository;
+
+  AuditQueryNotifier(this.repository) : super(AuditQueryInitial());
+
+  Future<void> getAudit({int page = 1, int limit = 20}) async {
+    state = AuditQueryLoading(page);
+
+    try {
+      final audit = await repository.getAudit(page: page, limit: limit);
+      state = AuditQueryLoaded(
+        audits: audit.data,
+        currentPage: page,
+        isLastPage: audit.nextPageUrl == null,
+      );
+    } catch (e) {
+      state = AuditQueryError(e.toString().replaceAll('Exception:', '').trim());
     }
   }
 }

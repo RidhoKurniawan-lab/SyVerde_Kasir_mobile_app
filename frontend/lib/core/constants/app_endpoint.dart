@@ -5,6 +5,8 @@ class AppEndpoint {
   // ログイン認証APIのURL
   static const String login = "$baseUrl/api/login";
 
+  static const String userGet = "$baseUrl/api/user/get";
+
   // 製品一覧を取得するAPI
   static const String productGet = "$baseUrl/api/product/get";
 
@@ -35,7 +37,11 @@ class AppEndpoint {
   static String categoryDelete(int id) => "$baseUrl/api/category/$id/delete";
 
   // Transaction 
-  static String transactionGet(int page, int? limit) => "$baseUrl/api/transaction/get?page=$page&limit=$limit";
+  static String transactionGet(int page, int? limit, String? startDate, String? endDate, int? userId) => "$baseUrl/api/transaction/get?page=$page&limit=$limit&user_id=$userId&start_date=$startDate&end_date=$endDate";
+
+  static String stockGet(int page, int? limit) => "$baseUrl/api/product/get/paginate?page=$page&limit=$limit";
+  
+  static String auditGet(int page, int? limit) => "$baseUrl/api/audit/get/paginate?page=$page&limit=$limit";
   
   static String transactionGetByid(int id) => "$baseUrl/api/transaction/$id/get";
 

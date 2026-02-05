@@ -1,24 +1,26 @@
 import 'package:frontend/data/models/response/role_model.dart';
 
 class UserModel {
-  final int id;
-  final String name;
-  final String email;
-  final RoleModel role;
+  final int? id;
+  final String? name;
+  final String? email;
+  final RoleModel? role;
 
   UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.role,
+    this.id,
+    this.name,
+    this.email,
+    this.role,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      role: RoleModel.fromJson(json['role']),
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      role: json['role'] != null
+          ? RoleModel.fromJson(json['role'])
+          : null,
     );
   }
 }

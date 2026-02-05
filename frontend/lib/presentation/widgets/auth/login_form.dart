@@ -28,9 +28,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         ).showSnackBar(SnackBar(content: Text(next.message)));
       }
       if (next is AuthSuccess) {
-        if (next.user.role.name == 'Administrator') {
+        if (next.user.role!.name == 'Administrator') {
           Navigator.pushReplacementNamed(context, '/admin');
-        } else if (next.user.role.name == 'Cashier') {
+        } else if (next.user.role!.name == 'Cashier') {
           Navigator.pushReplacementNamed(context, '/kasir');
         }
       }

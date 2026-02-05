@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if(!Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Email atau password salah'
             ], 401);
@@ -31,8 +32,16 @@ class AuthController extends Controller
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
-                'role'  => $user->role, 
+                'role'  => $user->role,
             ]
         ]);
+    }
+
+    public function getAll()
+    {
+        $users = User::whereHas('role', function ($q) {
+            $q->where('name', 'Cashier');
+        })->get();
+        return response()->json($users);
     }
 }

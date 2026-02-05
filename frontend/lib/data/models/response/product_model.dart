@@ -11,6 +11,7 @@ class ProductModel {
   final UnitModel? unit;
   final String image;
   final String? description;
+  final String? unitName;
 
   ProductModel({
     this.id,
@@ -22,6 +23,7 @@ class ProductModel {
     this.unit,
     this.image = '',
     this.description,
+    this.unitName,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class ProductModel {
           : null,
       sku: json['sku'] ?? '',
       name: json['name'] ?? '',
+      unitName: json['unit_name'] ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0,
       stock: json['stock'] ?? 0,
       unit: json['unit'] != null

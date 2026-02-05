@@ -11,7 +11,10 @@ class TransactionController extends Controller
 {
     public function getAll(Request $request)
     {
-        $limit = $request->query('limit', 20);
+        $limit     = $request->query('limit', 20);
+        $startDate = $request->query('start_date');
+        $endDate   = $request->query('end_date');
+        $userId    = $request->query('user_id');
 
         $transaction = Transaction::select([
             'transactions.id',
@@ -21,11 +24,29 @@ class TransactionController extends Controller
             'users.name as user_name'
         ])
             ->join('users', 'users.id', '=', 'transactions.user_id')
+
+            // filter by user_id
+            ->when(
+                !is_null($userId) && !in_array((int) $userId, [0, 1]),
+                function ($query) use ($userId) {
+                    $query->where('transactions.user_id', $userId);
+                }
+            )
+
+            // filter by start_date & end_date
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('transactions.created_at', [
+                    $startDate . ' 00:00:00',
+                    $endDate . ' 23:59:59'
+                ]);
+            })
+
             ->latest('transactions.created_at')
             ->simplePaginate($limit);
 
         return response()->json($transaction);
     }
+
 
     public function getById(Transaction $transaction)
     {

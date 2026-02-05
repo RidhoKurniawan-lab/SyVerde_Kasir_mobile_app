@@ -41,7 +41,47 @@ class AuthError extends AuthState {
 
 //NOTIFIER
 
-final authProvider = 
+abstract class UserQueryState {}
+
+class UserQueryInitial extends UserQueryState {}
+
+class UserQueryLoading extends UserQueryState {}
+
+class UserQueryLoaded extends UserQueryState {
+  final List<UserModel> users;
+  UserQueryLoaded(this.users);
+}
+
+class UserQueryError extends UserQueryState {
+  final String message;
+  UserQueryError(this.message);
+}
+
+final userQueryProvider =
+    StateNotifierProvider<UserQueryNotifier, UserQueryState>(
+      (ref) => UserQueryNotifier(ref.read(authRepositoryProvider)),
+    );
+
+class UserQueryNotifier extends StateNotifier<UserQueryState> {
+  final AuthRepository repository;
+
+  UserQueryNotifier(this.repository) : super(UserQueryInitial());
+
+  Future<void> getUser() async {
+    state = UserQueryLoading();
+
+    try {
+      final user = await repository.getUser();
+      state = UserQueryLoaded(user);
+    } catch (e) {
+      state = UserQueryError(
+        e.toString().replaceAll('Exception:', '').trim(),
+      );
+    }
+  }
+}
+
+final authProvider =
   StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(ref.read(authRepositoryProvider));
 });
