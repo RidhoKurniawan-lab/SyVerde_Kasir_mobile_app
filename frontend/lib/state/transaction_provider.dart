@@ -135,13 +135,13 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     }
   }
 
-  Future<void> getTransactionSummary({String period = 'today', bool silent = false}) async {
+  Future<void> getTransactionSummary({String period = 'today', bool silent = false, int? userId}) async {
     if (!silent) {
       state = TransactionLoading();
     }
 
     try {
-      final summery = await repository.getTransactionSummery(period: period);
+      final summery = await repository.getTransactionSummery(period: period, userId: userId);
       debugPrint('Data $summery');
       state = TransactionLoadedSummery(summery);
     } catch (e, stack) {
@@ -150,6 +150,23 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
 
       state = TransactionError(e.toString());
     }
+  }
+
+  Future<void> cancelTransaction({required int id}) async {
+    state = TransactionLoading();
+
+    try {
+      final transaction = await repository.cancelTransaction(id: id);
+      state = TransactionLoaded(transaction);
+    } catch (e) {
+      state = TransactionError(
+        e.toString().replaceAll('Exception:', '').trim(),
+      );
+    }
+  }
+
+  void reset() {
+    state = TransactionInitial();
   }
 }
 
@@ -172,6 +189,10 @@ class TransactionSummaryByCashierNotifier extends StateNotifier<TransactionState
     } catch (e) {
       state = TransactionError(e.toString());
     }
+  }
+
+  void reset() {
+    state = TransactionInitial();
   }
 }
 
@@ -214,6 +235,10 @@ class BestSellerNotifier extends StateNotifier<BestSellerState> {
     } catch (e) {
       state = BestSellerError(e.toString());
     }
+  }
+
+  void reset() {
+    state = BestSellerInitial();
   }
 }
 
@@ -269,6 +294,10 @@ class TransactionQueryNotifier extends StateNotifier<TransactionQueryState> {
       );
     }
   }
+
+  void reset() {
+    state = TransactionQueryInitial();
+  }
 }
 
 final transactionSearchProvider =
@@ -302,6 +331,10 @@ class StockQueryNotifier extends StateNotifier<StockQueryState> {
       state = StockQueryError(e.toString().replaceAll('Exception:', '').trim());
     }
   }
+
+  void reset() {
+    state = StockQueryInitial();
+  }
 }
 
 final auditQueryProvider =
@@ -328,5 +361,9 @@ class AuditQueryNotifier extends StateNotifier<AuditQueryState> {
     } catch (e) {
       state = AuditQueryError(e.toString().replaceAll('Exception:', '').trim());
     }
+  }
+
+  void reset() {
+    state = AuditQueryInitial();
   }
 }

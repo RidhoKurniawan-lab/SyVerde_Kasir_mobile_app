@@ -93,7 +93,7 @@ class TableRowWidget extends StatelessWidget {
         return Colors.blue.shade100;
       case 'delete':
         return Colors.red.shade100;
-      case 'cancel':
+      case 'canceled':
         return Colors.red.shade100;
       case 'view':
         return Colors.orange.shade100;
@@ -137,7 +137,7 @@ class TableRowWidget extends StatelessWidget {
     switch (action.toLowerCase()) {
       case 'completed':
         return Icons.check;
-      case 'cancel':
+      case 'canceled':
         return Icons.close;
       default:
         return Icons.question_mark;

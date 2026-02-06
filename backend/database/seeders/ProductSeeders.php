@@ -34,7 +34,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-002',
                     'name' => 'Arabika Gayo Washed',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 2,
                     'price' => 90000.00,
                     'image' => 'image',
                     'description' => 'Clean washed gayo'
@@ -43,7 +43,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-003',
                     'name' => 'Arabika Kintamani Honey',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 3,
                     'price' => 105000.00,
                     'image' => 'image',
                     'description' => 'Sweet honey process'
@@ -52,7 +52,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-004',
                     'name' => 'Arabika Kintamani Washed',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 4,
                     'price' => 98000.00,
                     'image' => 'image',
                     'description' => 'Clean citrus body'
@@ -79,7 +79,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-007',
                     'name' => 'Arabika Flores Bajawa',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 2,
                     'price' => 110000.00,
                     'image' => 'image',
                     'description' => 'Chocolate nutty body'
@@ -88,7 +88,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-008',
                     'name' => 'Arabika Flores Manggarai',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 4,
                     'price' => 108000.00,
                     'image' => 'image',
                     'description' => 'Floral smooth finish'
@@ -106,7 +106,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-010',
                     'name' => 'Arabika Mandheling Grade 1',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 2,
                     'price' => 118000.00,
                     'image' => 'image',
                     'description' => 'Premium mandheling body'
@@ -115,7 +115,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-011',
                     'name' => 'Arabika Java Preanger',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 4,
                     'price' => 102000.00,
                     'image' => 'image',
                     'description' => 'Classic java balance'
@@ -133,7 +133,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-013',
                     'name' => 'Arabika Kerinci Honey',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 3,
                     'price' => 107000.00,
                     'image' => 'image',
                     'description' => 'Sweet kerinci honey'
@@ -151,7 +151,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-015',
                     'name' => 'Arabika Pangalengan Washed',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 2,
                     'price' => 99000.00,
                     'image' => 'image',
                     'description' => 'Clean west java'
@@ -160,7 +160,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'AR-016',
                     'name' => 'Arabika Pangalengan Honey',
                     'category_id' => 1,
-                    'unit_id' => 1,
+                    'unit_id' => 2,
                     'price' => 104000.00,
                     'image' => 'image',
                     'description' => 'Sweet honey java'
@@ -169,7 +169,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'RB-001',
                     'name' => 'Robusta Temanggung Fine',
                     'category_id' => 2,
-                    'unit_id' => 1,
+                    'unit_id' => 3,
                     'price' => 85000.00,
                     'image' => 'image',
                     'description' => 'Strong chocolate bitterness'
@@ -178,7 +178,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'RB-002',
                     'name' => 'Robusta Sidikalang Premium',
                     'category_id' => 2,
-                    'unit_id' => 1,
+                    'unit_id' => 3,
                     'price' => 88000.00,
                     'image' => 'image',
                     'description' => 'Bold premium robusta'
@@ -187,7 +187,7 @@ class ProductSeeders extends Seeder
                     'sku' => 'BRA-001',
                     'name' => 'Espresso Blend House',
                     'category_id' => 2,
-                    'unit_id' => 1,
+                    'unit_id' => 4,
                     'price' => 95000.00,
                     'image' => 'image',
                     'description' => 'Balanced daily espresso'

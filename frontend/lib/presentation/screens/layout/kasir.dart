@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/dashboard/kasir.dart';
+import 'package:frontend/presentation/screens/more/transaction.dart';
+import 'package:frontend/presentation/screens/product/admin/logout.dart';
 import 'package:frontend/presentation/screens/product/user/main.dart';
 import 'package:frontend/presentation/widgets/navigation/kasir_navbar.dart';
 import 'package:frontend/presentation/screens/more/more.dart';
@@ -17,8 +19,8 @@ class _KasirLayoutState extends State<KasirLayout> {
   final List<Widget> _pages = [
     KasirDashboard(),
     UserProduct(),
-    Center(child: Text('Member Page')),
-    MoreMenu(),
+    Transaction(),
+    LogoutPage(),
   ];
 
   @override

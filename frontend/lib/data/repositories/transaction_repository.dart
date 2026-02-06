@@ -64,9 +64,18 @@ class TransactionRepository {
     }
   }
 
-  Future<TransactionSummary> getTransactionSummery({String period = 'today'}) async {
+  Future<TransactionModel> cancelTransaction({required int id}) async {
     try {
-      final response = await api.getTransactionSummary(period: period);
+      final response = await api.cancelTransaction(id: id);
+      return TransactionModel.fromJson(response['data']);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<TransactionSummary> getTransactionSummery({String period = 'today', int? userId}) async {
+    try {
+      final response = await api.getTransactionSummary(period: period, userId: userId);
       debugPrint('Data $response');
       return TransactionSummary.fromJson(response);
     } catch (e) {

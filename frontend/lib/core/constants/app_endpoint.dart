@@ -45,6 +45,8 @@ class AppEndpoint {
   
   static String transactionGetByid(int id) => "$baseUrl/api/transaction/$id/get";
 
+  static String transactionCancel(int id) => "$baseUrl/api/transaction/$id/cancel";
+
   static const String transactionSummey = "$baseUrl/api/transaction/get/summery";
 
   static const String transactionMonthlySummary = "$baseUrl/api/transaction/monthly-summary";

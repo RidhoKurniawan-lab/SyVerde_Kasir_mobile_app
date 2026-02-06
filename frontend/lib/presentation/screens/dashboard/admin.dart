@@ -162,7 +162,7 @@ class _AdminDashboard extends ConsumerState<AdminDashboard> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
-                          color: AppColor.blue100,
+                          color: AppColor.primary,
                         ),
                       ),
                     ),
@@ -177,12 +177,12 @@ class _AdminDashboard extends ConsumerState<AdminDashboard> {
                  margin: const EdgeInsets.only(bottom: 20),
                  padding: const EdgeInsets.symmetric(horizontal: 14),
                  decoration: BoxDecoration(
-                    color: AppColor.blue100,
+                    color: AppColor.primary,
                     borderRadius: BorderRadius.circular(12),
                  ),
                  child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      dropdownColor: AppColor.blue100,
+                      dropdownColor: AppColor.primary,
                       value: _selectedPeriod,
                       icon: const Icon(Icons.calendar_today, color: Colors.white, size: 18),
                       items: _periods.map((p) => DropdownMenuItem(
@@ -280,9 +280,9 @@ class _AdminDashboard extends ConsumerState<AdminDashboard> {
                       children: [
                         Expanded(
                           child: ReportCard(
-                            iconBgColor: AppColor.yellow28,
-                            iconColor: AppColor.yellow100,
-                            icon: Icons.request_quote_outlined,
+                            iconBgColor: AppColor.red28,
+                            iconColor: AppColor.red100,
+                            icon: Icons.task_outlined,
                             headerText: 'Order',
                             mainText: summaryState is TransactionLoadedSummery ? summaryState.summery.totalItem.toString() : '0',
                             bottomText: summaryState is TransactionLoadedSummery ? (summaryState.summery.totalItemPercent ?? 0).toDouble() : 0,
@@ -292,9 +292,9 @@ class _AdminDashboard extends ConsumerState<AdminDashboard> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ReportCard(
-                            iconBgColor: AppColor.blue28,
-                            iconColor: AppColor.blue100,
-                            icon: Icons.trending_up,
+                            iconBgColor: AppColor.purple28,
+                            iconColor: AppColor.purple100,
+                            icon: Icons.account_balance_wallet_outlined,
                             headerText: 'E-Money',
                             mainText: summaryState is TransactionLoadedSummery ? formatRupiah(summaryState.summery.nonCash) : '0',
                             bottomText: summaryState is TransactionLoadedSummery ? (summaryState.summery.nonCashPercent ?? 0).toDouble() : 0,

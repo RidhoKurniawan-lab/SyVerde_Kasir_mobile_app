@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('discount_total', 10, 2);
             $table->double('grand_total', 10, 2);
             $table->string('payment_method');
+            $table->string('status');
             $table->double('paid_amount', 10, 2);
             $table->double('change_amount', 10, 2);
             $table->timestamps();

@@ -16,6 +16,7 @@ class TransactionService
                 'invoice_number' => $invoiceService->generateInvoice(now()),
                 'user_id' => $request->user()->id,
                 'payment_method' => $request->payment_method,
+                'status' => 'completed',
                 'paid_amount' => $request->paid_amount,
                 'total' => $request->total,
                 'grand_total' => $request->grand_total,

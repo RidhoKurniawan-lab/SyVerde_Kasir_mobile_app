@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/core/constants/app_color.dart';
@@ -22,13 +23,41 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final state = ref.read(transactionProvider);
-      if (state is! TransactionLoaded) {
-        ref
-            .read(transactionProvider.notifier)
-            .getTransactionById(id: widget.id);
-      }
+      ref
+          .read(transactionProvider.notifier)
+          .getTransactionById(id: widget.id);
     });
+  }
+
+  void _showCancelConfirmation(int id) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancel Transaction'),
+        content: const Text('Are you sure you want to cancel this transaction?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('No'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColor.red100),
+            onPressed: () {
+              Navigator.pop(context);
+              ref.read(transactionProvider.notifier).cancelTransaction(id: id).then((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Transaction canceled successfully')),
+                  );
+                  // Refresh lists to reflect status change
+                  ref.read(transactionQueryProvider.notifier).getTransaction();
+                  ref.read(transactionSearchProvider.notifier).getTransaction();
+              });
+            },
+            child: const Text('Yes, Cancel', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -105,6 +134,34 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
                                       ),
                                     ),
                                   ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Status:",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: (state.transaction.status?.toLowerCase() == 'canceled') ? AppColor.red28 : AppColor.green28,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    (state.transaction.status ?? 'Completed').toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: (state.transaction.status?.toLowerCase() == 'canceled') ? AppColor.red100 : AppColor.green100,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -214,12 +271,51 @@ class _DetailTransaction extends ConsumerState<DetailTransaction> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: BottomSubmitButton(
-                    text: 'Print Struk',
-                    onPressed: () {
-                      PdfGenerator.generateReceipt(state.transaction);
-                    },
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      if (state.transaction.status?.toLowerCase() != 'canceled' && 
+                          state.transaction.createdAt != null &&
+                          DateTime.now().year == state.transaction.createdAt!.year &&
+                          DateTime.now().month == state.transaction.createdAt!.month &&
+                          DateTime.now().day == state.transaction.createdAt!.day)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColor.red100,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () => _showCancelConfirmation(state.transaction.id!),
+                              child: const Text(
+                                'Batalkan Transaksi',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      Expanded(
+                        child: BottomSubmitButton(
+                          text: 'Print Struk',
+                          onPressed: () {
+                            if (kIsWeb) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Print struk tidak tersedia di Web")),
+                              );
+                              return;
+                            }
+                            PdfGenerator.generateReceipt(state.transaction);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

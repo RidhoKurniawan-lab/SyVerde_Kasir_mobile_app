@@ -18,7 +18,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.transactionGet(page, limit, startDate, endDate, userId, query: query)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -34,7 +37,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.transactionGetByid(id)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
     if (response.statusCode == 404) throw Exception('Data not found');
@@ -43,14 +49,42 @@ class TransactionApi {
     return data;
   }
 
-  Future<Map<String, dynamic>> getTransactionSummary({String period = 'today'}) async {
+  Future<Map<String, dynamic>> cancelTransaction({required int id}) async {
     final token = await SecureStorage.getToken();
 
     if (token == null) throw Exception('token expired');
 
+    final response = await http.post(
+      Uri.parse(AppEndpoint.transactionCancel(id)),
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
+    );
+
+    if (response.statusCode != 200) {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'failed to cancel transaction');
+    }
+
+    return jsonDecode(response.body);
+  }
+
+  Future<Map<String, dynamic>> getTransactionSummary({String period = 'today', int? userId}) async {
+    final token = await SecureStorage.getToken();
+
+    if (token == null) throw Exception('token expired');
+
+    final url = userId != null 
+        ? "${AppEndpoint.transactionSummey}?period=$period&user_id=$userId"
+        : "${AppEndpoint.transactionSummey}?period=$period";
+
     final response = await http.get(
-      Uri.parse("${AppEndpoint.transactionSummey}?period=$period"),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      Uri.parse(url),
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
     if (response.statusCode == 404) throw Exception('Data not found');
@@ -69,7 +103,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.stockGet(page, limit)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -88,7 +125,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.auditGet(page, limit)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -104,7 +144,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.transactionMonthlySummary),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -119,7 +162,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse("${AppEndpoint.transactionSummaryByCashier}?cashier_id=$cashierId&period=$period"),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -134,7 +180,10 @@ class TransactionApi {
 
     final response = await http.get(
       Uri.parse("${AppEndpoint.productBestSeller}?period=$period"),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 

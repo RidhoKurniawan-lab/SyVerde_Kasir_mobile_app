@@ -14,6 +14,7 @@ class AuthApi {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
         },
       body: jsonEncode({
         'email': email, 
@@ -35,7 +36,11 @@ class AuthApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.userGet),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
 
     if (response.statusCode != 200) throw Exception('failed to load data');

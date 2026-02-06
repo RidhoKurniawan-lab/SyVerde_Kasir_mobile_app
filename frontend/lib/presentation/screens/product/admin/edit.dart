@@ -65,18 +65,21 @@ class _EditProductState extends ConsumerState<EditProduct> {
       next,
     ) {
       if (next is ProductLoaded) {
-        _nameProductController.text = next.product.name;
-        _priceProductController.text = next.product.price.toString();
-        _skuProductController.text = next.product.sku;
-        _deskriptionProductController.text = next.product.description ?? '';
-        selectedCategory = next.product.category?.id ?? 0;
-        selectedUnit = next.product.unit?.id ?? 0;
-        _imageProduct = next.product.image;
+        setState(() {
+          _nameProductController.text = next.product.name;
+          _priceProductController.text = next.product.price.toString();
+          _skuProductController.text = next.product.sku;
+          _deskriptionProductController.text = next.product.description ?? '';
+          selectedCategory = next.product.category?.id ?? 0;
+          selectedUnit = next.product.unit?.id ?? 0;
+          _imageProduct = next.product.image;
+        });
       }
     });
 
     Future.microtask(() {
       ref.read(productProvider.notifier).getProductById(id: widget.id);
+      ref.read(categoryQueryProvider.notifier).getCategory();
     });
   }
 
@@ -171,7 +174,7 @@ class _EditProductState extends ConsumerState<EditProduct> {
                               fit: BoxFit.cover,
                             ),
                           )
-                        : Uri.parse(_imageProduct!).path != '/storage/image'
+                        : _imageProduct != null && _imageProduct!.isNotEmpty && Uri.tryParse(_imageProduct!)?.path != '/storage/image'
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.network(

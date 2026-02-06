@@ -40,106 +40,108 @@ class _StockTableState extends ConsumerState<StockTable> {
         category: false,
         header: 'Report Stock',
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-
-                  // Table Container
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 1000),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // ===== JUDUL (DI DALAM CONTAINER) =====
-                          Container(
-                            height: 48,
-                            decoration: const BoxDecoration(
-                              color: AppColor.primary,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(18),
-                                topRight: Radius.circular(18),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+        
+                    // Table Container
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 1000),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // ===== JUDUL (DI DALAM CONTAINER) =====
+                            Container(
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColor.primary,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(18),
+                                  topRight: Radius.circular(18),
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              alignment: Alignment.centerLeft,
+                              child: const Text(
+                                'Stock',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            alignment: Alignment.centerLeft,
-                            child: const Text(
-                              'Stock',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+        
+                            // ===== TABLE HEADER =====
+                            Container(
+                              height: 32,
+                              color: Colors.grey[200],
+                              child: Row(
+                                children: [
+                                  _buildHeaderCell('Product', flex: 2),
+                                  _buildHeaderCell('Stock'),
+                                  _buildHeaderCell('Unit'),
+                                  _buildHeaderCell('Status'),
+                                ],
                               ),
                             ),
-                          ),
-
-                          // ===== TABLE HEADER =====
-                          Container(
-                            height: 32,
-                            color: Colors.grey[200],
-                            child: Row(
-                              children: [
-                                _buildHeaderCell('Product', flex: 2),
-                                _buildHeaderCell('Stock'),
-                                _buildHeaderCell('Unit'),
-                                _buildHeaderCell('Status'),
-                              ],
-                            ),
-                          ),
-
-                          // ===== TABLE BODY =====
-                          Container(
-                            constraints: BoxConstraints(
-                              minHeight: 50,
-                              maxHeight: 660, // 50% dari tinggi layar
-                            ),
-                            child: state is StockQueryLoading
-                                ? const Center(child: CircularProgressIndicator())
-                                : state is StockQueryLoaded
-                                    ? _buildTransactionBody(state)
-                                    : state is StockQueryError
-                                        ? Center(child: Text(state.message))
-                                        : const SizedBox(),
-                          ),
-
-                          // ===== FOOTER =====
-                          Container(
-                            height: 48,
-                            decoration: const BoxDecoration(
-                              color: AppColor.primary,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(18),
-                                bottomRight: Radius.circular(18),
+        
+                            // ===== TABLE BODY =====
+                            Container(
+                              constraints: BoxConstraints(
+                                minHeight: 50,
+                                maxHeight: 660, // 50% dari tinggi layar
                               ),
+                              child: state is StockQueryLoading
+                                  ? const Center(child: CircularProgressIndicator())
+                                  : state is StockQueryLoaded
+                                      ? _buildTransactionBody(state)
+                                      : state is StockQueryError
+                                          ? Center(child: Text(state.message))
+                                          : const SizedBox(),
                             ),
-                            child: _buildPaginationFooter(),
-                          ),
-                        ],
+        
+                            // ===== FOOTER =====
+                            Container(
+                              height: 48,
+                              decoration: const BoxDecoration(
+                                color: AppColor.primary,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(18),
+                                  bottomRight: Radius.circular(18),
+                                ),
+                              ),
+                              child: _buildPaginationFooter(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  
-                  // Spacer untuk memastikan konten terlihat hingga bawah
-                  const SizedBox(height: 20),
-                ],
+                    
+                    // Spacer untuk memastikan konten terlihat hingga bawah
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

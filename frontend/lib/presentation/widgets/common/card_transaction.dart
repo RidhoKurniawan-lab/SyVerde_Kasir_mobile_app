@@ -7,6 +7,7 @@ class TransactionCard extends StatelessWidget {
   final String invoice;
   final String date; 
   final String time;
+  final String status;
 
   const TransactionCard({
     super.key,
@@ -14,10 +15,12 @@ class TransactionCard extends StatelessWidget {
     required this.invoice,
     required this.date,
     required this.time,
+    required this.status,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isCanceled = status.toLowerCase() == 'canceled';
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, AppRoutes.detailTransaction, arguments: id);
@@ -36,7 +39,7 @@ class TransactionCard extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  Text(
+                  const Text(
                     'ID:',
                     style: TextStyle(
                       fontSize: 14,
@@ -47,7 +50,7 @@ class TransactionCard extends StatelessWidget {
                     child: Text(
                       invoice,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: AppColor.green100,
@@ -55,6 +58,24 @@ class TransactionCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+      
+            const SizedBox(width: 8),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isCanceled ? AppColor.red28 : AppColor.green28,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                status.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: isCanceled ? AppColor.red100 : AppColor.green100,
+                ),
               ),
             ),
       

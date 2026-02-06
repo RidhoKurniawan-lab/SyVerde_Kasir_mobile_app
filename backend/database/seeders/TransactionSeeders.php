@@ -33,8 +33,10 @@ class TransactionSeeders extends Seeder
             // for looping transaction perday if rand 5 make 5 transaction
             for ($i = 0; $i < $dialyTransactionCount; $i++) {
 
+                $rand = rand(1, 100);
                 $invoiceService = app(InvoiceGeneratorService::class);
                 $paymentMethod = collect(['cash', 'qris'])->random();
+                $status = $rand <= 5 ? 'canceled' : 'completed';
                 $createAt = $date->copy()->addMinutes(rand(0, 1440));
                 $userId = rand(2, 3);
 
@@ -45,6 +47,7 @@ class TransactionSeeders extends Seeder
                     'discount_total' => 0,
                     'grand_total' => 0,
                     'payment_method' => $paymentMethod,
+                    'status' => $status,
                     'paid_amount' => 0,
                     'change_amount' => 0,
                     'created_at' => $date->copy()->addMinutes(rand(0, 1440))

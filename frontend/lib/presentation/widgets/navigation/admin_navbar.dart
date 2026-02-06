@@ -17,7 +17,7 @@ class AdminNavbar extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: SizedBox(
-          height: 74,
+          height: 80,
           child: Container(
             decoration: BoxDecoration(
               color: AppColor.primary,
@@ -35,8 +35,7 @@ class AdminNavbar extends StatelessWidget {
                 _NavItem(icon: Icons.home, index: 0, currentIndex: currentIndex, onTap: onTap),
                 _NavItem(icon: Icons.bar_chart, index: 1, currentIndex: currentIndex, onTap: onTap),
                 _NavItem(icon: Icons.all_inbox, index: 2, currentIndex: currentIndex, onTap: onTap),
-                _NavItem(icon: Icons.receipt_long, index: 3, currentIndex: currentIndex, onTap: onTap),
-                _NavItem(icon: Icons.settings, index: 4, currentIndex: currentIndex, onTap: onTap),
+                _NavItem(icon: Icons.logout, index: 3, currentIndex: currentIndex, onTap: onTap),
               ],
             ),
           ),
@@ -79,7 +78,7 @@ class _NavItem extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              size: 30,
+              size: 40,
               color: isSelected ? AppColor.primary : AppColor.primarywhite,
             ),
           ),

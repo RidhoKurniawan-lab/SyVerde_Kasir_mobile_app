@@ -25,7 +25,7 @@ class SearchTextField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           filled: true,
-          fillColor: AppColor.primarywhite,
+          fillColor: AppColor.secondarywhite,
 
           // padding text supaya ga nabrak icon
           contentPadding: const EdgeInsets.symmetric(vertical: 14),

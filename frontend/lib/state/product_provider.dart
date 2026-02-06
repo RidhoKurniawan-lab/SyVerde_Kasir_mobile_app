@@ -91,6 +91,10 @@ class ProductNotifier extends StateNotifier<ProductState> {
       
     }
   }
+
+  void reset() {
+    state = ProductInitial();
+  }
 }
 
 // PROVIDER GETS
@@ -116,6 +120,10 @@ class ProductQueryNotifier extends StateNotifier<ProductQueryState> {
         e.toString().replaceAll('Exception:', '').trim(),
       );
     }
+  }
+
+  void reset() {
+    state = ProductQueryInitial();
   }
 }
 
@@ -203,6 +211,10 @@ class ProductSubmitNotifier extends StateNotifier<ProductSubmitState> {
        state = ProductSubmitError(e.toString());
     }
   }
+
+  void reset() {
+    state = ProductSubmitInitial();
+  }
 }
 
 // PRODUCT SEARCH PROVIDER
@@ -228,5 +240,9 @@ class ProductSearchNotifier extends StateNotifier<AsyncValue<List<ProductModel>>
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
     }
+  }
+
+  void reset() {
+    state = const AsyncValue.data([]);
   }
 }

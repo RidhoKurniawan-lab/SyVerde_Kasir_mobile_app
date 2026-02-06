@@ -209,7 +209,7 @@ class _TransactionTableState extends ConsumerState<TransactionTable> {
                         'type': 'text',
                       },
                       'row4': {
-                        'text': 'completed',
+                        'text': transaction.status,
                         'type': 'status',
                         'format': 'icon',
                       },

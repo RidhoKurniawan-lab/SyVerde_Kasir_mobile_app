@@ -56,6 +56,10 @@ class _AddProductState extends ConsumerState<AddProduct> {
         Navigator.pop(context);
       }
     });
+
+    Future.microtask(() {
+      ref.read(categoryQueryProvider.notifier).getCategory();
+    });
   }
 
   @override

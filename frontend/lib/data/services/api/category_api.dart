@@ -11,7 +11,11 @@ class CategoryApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.category),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
 
     if (response.statusCode != 200) throw Exception('failed to load data');
@@ -30,7 +34,10 @@ class CategoryApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.categoryById(id)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',},
     );
 
     if (response.statusCode == 404) throw Exception(jsonDecode(response.body)['message'] ?? 'Data not found');
@@ -52,7 +59,8 @@ class CategoryApi {
       headers: {
         'Content-Type': 'application/json', 
         'Accept': 'application/json', 
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
         },
       body: jsonEncode(fields)
     );
@@ -81,7 +89,8 @@ class CategoryApi {
       headers: {
         'Content-Type': 'application/json', 
         'Accept': 'application/json', 
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
         },
       body: jsonEncode(fields)
     );
@@ -104,7 +113,11 @@ class CategoryApi {
 
     final response = await http.delete(
       Uri.parse(AppEndpoint.categoryDelete(id)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/dashboard/admin.dart';
+import 'package:frontend/presentation/screens/product/admin/logout.dart';
 import 'package:frontend/presentation/screens/product/admin/main.dart';
 import 'package:frontend/presentation/screens/report/report.dart';
 import 'package:frontend/presentation/widgets/navigation/admin_navbar.dart';
@@ -18,8 +19,7 @@ class _AdminLayoutState extends State<AdminLayout> {
     AdminDashboard(),
     Report(),
     AdminProduct(),
-    Center(child: Text('Admin Transaction Page')),
-    Center(child: Text('Admin More Page')),
+    LogoutPage()
   ];
 
 

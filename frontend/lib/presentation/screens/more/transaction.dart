@@ -217,6 +217,7 @@ class _Transaction extends ConsumerState<Transaction> {
                               time: DateTimeUtils.formatTime(
                                 transaction.createdAt.toString(),
                               ),
+                              status: transaction.status ?? 'Completed',
                             );
                           },
                         )

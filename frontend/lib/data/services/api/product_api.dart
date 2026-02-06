@@ -19,7 +19,8 @@ class ProductApi {
       headers: {
         'Content-Type': 'application/json', 
         'Accept': 'application/json', 
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: jsonEncode(payload)
     );
@@ -40,6 +41,7 @@ class ProductApi {
         'Content-Type': 'application/json', 
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: jsonEncode(payload)
     );
@@ -62,7 +64,11 @@ class ProductApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.productGet),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 
@@ -79,7 +85,10 @@ class ProductApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.productGetById(id)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token', 
+        'ngrok-skip-browser-warning': 'true',},
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
     if (response.statusCode == 404) throw Exception('Data not found');
@@ -107,6 +116,7 @@ class ProductApi {
     request.headers.addAll({
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
+      'ngrok-skip-browser-warning': 'true',
     });
 
     fields.forEach((key, value) {
@@ -146,6 +156,7 @@ class ProductApi {
     request.headers.addAll({
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
+      'ngrok-skip-browser-warning': 'true',
     });
 
     fields.forEach((key, value) {
@@ -177,7 +188,11 @@ class ProductApi {
 
     final response = await http.delete(
       Uri.parse(AppEndpoint.productDelete(id)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
 
     if (response.statusCode != 200 && response.statusCode != 201) {
@@ -196,7 +211,11 @@ class ProductApi {
 
     final response = await http.get(
       Uri.parse(AppEndpoint.productSearch(query)),
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer $token',
+        'ngrok-skip-browser-warning': 'true',
+        },
     );
     if (response.statusCode != 200) throw Exception('failed to load data');
 

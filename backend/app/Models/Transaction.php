@@ -17,7 +17,8 @@ class Transaction extends Model
         'grand_total',
         'payment_method',
         'paid_amount',
-        'change_amount'
+        'change_amount',
+        'status'
     ];
 
     public function items(){

@@ -59,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/transaction/get/summery-by-cashier', [TransactionController::class, 'summeryByCashier']);
 
+    Route::post('/transaction/{transaction}/cancel', [TransactionController::class, 'cancel']);
+
     Route::get('/product/best-seller', [ProductController::class, 'bestSeller']);
     Route::get('/product/search', [\App\Http\Controllers\ProductSearchController::class, 'search']);
 

@@ -50,8 +50,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Yumi Lee',
-            'email' => 'admin@gmail.com',
+            'name' => 'Amba To King I',
+            'email' => 'ambatoking@gmail.com',
             'password' => 'admin123',
             'is_active' => true,
             'role_id' => 1,
@@ -60,8 +60,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Takeda Kaneshiro',
-            'email' => 'kasir@gmail.com',
+            'name' => 'King Nasir II',
+            'email' => 'kingnasir2@gmail.com',
             'password' => 'kasir123',
             'is_active' => false,
             'role_id' => 2,
@@ -70,8 +70,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Momoko Kawasaki',
-            'email' => 'kasir2@gmail.com',
+            'name' => 'Yess King',
+            'email' => 'yessking@gmail.com',
             'password' => 'kasir123',
             'is_active' => false,
             'role_id' => 2,

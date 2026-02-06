@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:frontend/presentation/widgets/common/card_dashboard.dart';
 import 'package:frontend/state/transaction_provider.dart';
+import 'package:frontend/state/auth_provider.dart';
 
 class KasirDashboard extends ConsumerStatefulWidget {
   const KasirDashboard({super.key});
@@ -35,13 +36,23 @@ class _KasirDashboard extends ConsumerState<KasirDashboard> {
 
     _pollingTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       if (!mounted) return;
-      ref.read(transactionProvider.notifier).getTransactionSummary(silent: true);
+      final authState = ref.read(authProvider);
+      int? userId;
+      if (authState is AuthSuccess) {
+        userId = authState.user.id;
+      }
+      ref.read(transactionProvider.notifier).getTransactionSummary(silent: true, userId: userId);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(transactionProvider);
       if (state is! TransactionLoadedSummery) {
-        ref.read(transactionProvider.notifier).getTransactionSummary();
+        final authState = ref.read(authProvider);
+        int? userId;
+        if (authState is AuthSuccess) {
+          userId = authState.user.id;
+        }
+        ref.read(transactionProvider.notifier).getTransactionSummary(userId: userId);
       }
     });
   }

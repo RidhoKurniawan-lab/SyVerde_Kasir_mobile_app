@@ -6,9 +6,41 @@ use Carbon\Carbon;
 use App\Models\Transaction;
 use App\Models\TransactionItems;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    public function cancel(Transaction $transaction)
+    {
+        if ($transaction->status === 'canceled') {
+            return response()->json([
+                'message' => 'Transaction is already canceled',
+            ], 400);
+        }
+
+        if (!Carbon::parse($transaction->created_at)->isToday()) {
+            return response()->json([
+                'message' => 'Only today\'s transactions can be canceled',
+            ], 403);
+        }
+
+        $transaction->update([
+            'status' => 'canceled'
+        ]);
+
+        $transaction->entries()->create([
+            'user_id' => Auth::id(),
+            'description' => 'Cancelled Transaction ' . $transaction->invoice_number,
+            'action' => 'update'
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Transaction canceled successfully',
+            'data' => $transaction
+        ]);
+    }
     public function getAll(Request $request)
     {
         $limit     = $request->query('limit', 20);
@@ -17,11 +49,16 @@ class TransactionController extends Controller
         $userId    = $request->query('user_id');
         $querySearch = $request->query('query');
 
+        if (Auth::user()->role->name === 'Cashier') {
+            $userId = Auth::id();
+        }
+
         $transaction = Transaction::select([
             'transactions.id',
             'transactions.invoice_number',
             'transactions.created_at',
             'transactions.total',
+            DB::raw("IFNULL(transactions.status, 'completed') as status"),
             'users.name as user_name'
         ])
             ->join('users', 'users.id', '=', 'transactions.user_id')
@@ -33,7 +70,7 @@ class TransactionController extends Controller
 
             // filter by user_id
             ->when(
-                !is_null($userId) && !in_array((int) $userId, [0, 1]),
+                !is_null($userId) && $userId != 0,
                 function ($query) use ($userId) {
                     $query->where('transactions.user_id', $userId);
                 }
@@ -64,15 +101,25 @@ class TransactionController extends Controller
     public function summeryToday(Request $request)
     {
         $period = $request->query('period', 'today');
-        return response()->json($this->getSummaryData(null, $period));
+        $userId = $request->query('user_id'); 
+
+        if (Auth::user()->role->name === 'Cashier') {
+            $userId = Auth::id();
+        }
+
+        return response()->json($this->getSummaryData($userId, $period));
     }
 
     public function summeryByCashier(Request $request)
     {
-        $cashierId = $request->query('cashier_id');
+        $userId = $request->query('user_id') ?? $request->query('cashier_id');
         $period    = $request->query('period', 'today');
 
-        if (!$cashierId) {
+        if (Auth::user()->role->name === 'Cashier') {
+            $userId = Auth::id();
+        }
+
+        if (!$userId) {
             return response()->json([
                 'cash' => 0,
                 'cash_change_percent' => 0,
@@ -83,7 +130,7 @@ class TransactionController extends Controller
             ]);
         }
 
-        return response()->json($this->getSummaryData($cashierId, $period));
+        return response()->json($this->getSummaryData($userId, $period));
     }
 
     private function getSummaryData($cashierId = null, $period = 'today')
@@ -111,7 +158,7 @@ class TransactionController extends Controller
         $queryCurrent = Transaction::whereBetween('created_at', [$startDate->format('Y-m-d') . ' 00:00:00', $endDate->format('Y-m-d') . ' 23:59:59']);
         $queryCompare = Transaction::whereBetween('created_at', [$compareStartDate->format('Y-m-d') . ' 00:00:00', $compareEndDate->format('Y-m-d') . ' 23:59:59']);
 
-        if ($cashierId) {
+        if ($cashierId && $cashierId != 0) {
             $queryCurrent->where('user_id', $cashierId);
             $queryCompare->where('user_id', $cashierId);
         }
@@ -135,12 +182,12 @@ class TransactionController extends Controller
         // Total item periode ini
         $totalItemCurrent = TransactionItems::whereHas('transaction', function ($q) use ($startDate, $endDate, $cashierId) {
             $q->whereBetween('created_at', [$startDate->format('Y-m-d') . ' 00:00:00', $endDate->format('Y-m-d') . ' 23:59:59']);
-            if ($cashierId) $q->where('user_id', $cashierId);
+            if ($cashierId && $cashierId != 0) $q->where('user_id', $cashierId);
         })->sum('qty');
 
         $totalItemCompare = TransactionItems::whereHas('transaction', function ($q) use ($compareStartDate, $compareEndDate, $cashierId) {
             $q->whereBetween('created_at', [$compareStartDate->format('Y-m-d') . ' 00:00:00', $compareEndDate->format('Y-m-d') . ' 23:59:59']);
-            if ($cashierId) $q->where('user_id', $cashierId);
+            if ($cashierId && $cashierId != 0) $q->where('user_id', $cashierId);
         })->sum('qty');
 
         // Hitung persentase perubahan

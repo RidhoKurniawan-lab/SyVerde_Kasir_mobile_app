@@ -30,6 +30,7 @@ class TransactionModel {
   final double? grandTotal;
 
   final String? paymentMethod;
+  final String? status;
   final double? paidAmount;
   final double? changeAmount;
 
@@ -46,6 +47,7 @@ class TransactionModel {
     this.discountTotal,
     this.grandTotal,
     this.paymentMethod,
+    this.status,
     this.paidAmount,
     this.changeAmount,
     this.createdAt,
@@ -64,6 +66,7 @@ class TransactionModel {
       discountTotal: (json['discount_total'] as num?)?.toDouble(),
       grandTotal: (json['grand_total'] as num?)?.toDouble(),
       paymentMethod: json['payment_method'],
+      status: json['status'],
       userName: json['user_name'],
       paidAmount: (json['paid_amount'] as num?)?.toDouble(),
       changeAmount: (json['change_amount'] as num?)?.toDouble(),

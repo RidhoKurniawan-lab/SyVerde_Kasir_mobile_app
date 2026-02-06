@@ -129,7 +129,7 @@ class ProductController extends Controller
         }
 
         $product->entries()->create([
-            'user_id' => $id,
+            'user_id' => Auth::id(),
             'description' => 'Deleted Product' . $product->name,
             'action' => 'delete'
         ]);
